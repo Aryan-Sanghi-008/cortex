@@ -3,10 +3,13 @@ import { AppConfig } from "../config.js";
 import { createLLMProvider } from "../llm/index.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PersistentMemory } from "../memory/persistent.memory.js";
+import { ProjectStore } from "../memory/project-store.js";
 import { TeamRunner } from "./team-runner.js";
 import { ProjectAssembler } from "./project-assembler.js";
 import { WSEmitter } from "../server/ws-emitter.js";
 import { logger } from "../utils/logger.js";
+import { runWithConcurrency } from "../utils/concurrency.js";
+import { compressCodeOutput } from "../utils/context-compressor.js";
 import { TokenTracker, type ProjectCostBreakdown } from "../utils/token-tracker.js";
 
 // Bots
@@ -69,12 +72,14 @@ export interface ProjectOutput {
 export class Orchestrator {
   private config: AppConfig;
   private persistentMemory: PersistentMemory;
+  private projectStore: ProjectStore;
   private emitter?: WSEmitter;
   public tokenTracker: TokenTracker;
 
   constructor(config: AppConfig, emitter?: WSEmitter) {
     this.config = config;
     this.persistentMemory = new PersistentMemory(config.outputDir);
+    this.projectStore = new ProjectStore();
     this.emitter = emitter;
     this.tokenTracker = new TokenTracker();
   }
@@ -96,6 +101,14 @@ export class Orchestrator {
 
     const defaultLLM = this.createDefaultProvider();
     const leaderLLM = this.createLeaderProvider();
+
+    // ─── Load past project lessons ───────────────────────────
+    const similarProjects = await this.projectStore.findSimilar(productIdea);
+    if (similarProjects.length > 0) {
+      const lessons = this.projectStore.formatForPrompt(similarProjects);
+      memory.set("past-projects", lessons, "ProjectStore");
+      logger.info(`Found ${similarProjects.length} similar past projects for context`);
+    }
 
     // ─── Step 1: Documentation Generator ────────────────────
     logger.step(1, 10, "Documentation Generator — Creating spec");
@@ -160,6 +173,14 @@ export class Orchestrator {
     memory.set("frontend-lead", feLeadResult.output, feLeadBot.role);
     memory.set("backend-lead", beLeadResult.output, beLeadBot.role);
 
+    // ─── Step 5.5: API Contract Sync ────────────────────
+    // Share BE lead's API contract with FE devs for consistent API calls
+    const apiContract = beLeadResult.output.apiContract ?? [];
+    if (apiContract.length > 0) {
+      memory.set("api-contract", apiContract, "ContractSync");
+      logger.bot("ContractSync", `Synced ${apiContract.length} API endpoints to frontend team`);
+    }
+
     this.emitter?.botComplete(projectId, "Frontend-Lead");
     this.emitter?.botComplete(projectId, "Backend-Lead");
     logger.bot("FE-Lead", `${feLeadResult.output.modules.length} modules assigned`);
@@ -202,6 +223,11 @@ export class Orchestrator {
 
     // ─── Step 7: QA ─────────────────────────────────────────
     logger.step(7, 10, "QA — Generating tests");
+
+    // Compress code context for QA bots (they need structure, not full source)
+    memory.set("frontend-code-summary", compressCodeOutput(feTeamResult.code), "Compressor");
+    memory.set("backend-code-summary", compressCodeOutput(beTeamResult.code), "Compressor");
+
     this.emitter?.botStart(projectId, "QA-Lead", "Designing test strategy");
 
     const qaLeadBot = new QALeadBot(defaultLLM, maxRetries);
@@ -210,12 +236,15 @@ export class Orchestrator {
     this.emitter?.botComplete(projectId, "QA-Lead");
 
     this.emitter?.botStart(projectId, "QA-Devs", "Writing tests");
-    // Run QADevBots for each module in the QA Lead's assignment
-    const qaDevResults = await Promise.all(
+    // Run QADevBots for each module in the QA Lead's assignment (rate-limited)
+    const qaDevResults = await runWithConcurrency(
       qaLeadResult.output.modules.map((_, index) => {
-        const qaDevBot = new QADevBot(defaultLLM, index, maxRetries);
-        return qaDevBot.execute(memory);
-      })
+        return () => {
+          const qaDevBot = new QADevBot(defaultLLM, index, maxRetries);
+          return qaDevBot.execute(memory);
+        };
+      }),
+      5 // Max 5 concurrent (Gemini free: 15 RPM)
     );
     
     const mergedQaCode: CodeOutput = {
@@ -279,6 +308,24 @@ export class Orchestrator {
     // Save metadata
     await this.persistentMemory.saveProject(memory);
 
+    // Store project record for future cross-project learning
+    const totalFiles = feTeamResult.code.files.length + beTeamResult.code.files.length
+      + mergedDbCode.files.length + mergedQaCode.files.length + devopsResult.output.files.length;
+    await this.projectStore.addProject({
+      id: projectId,
+      prompt: productIdea,
+      projectType: docResult.output.projectType ?? "fullstack",
+      features: docResult.output.features?.map((f: { name: string }) => f.name) ?? [],
+      techStack: {
+        frontend: tsResult.output.frontend ?? [],
+        backend: tsResult.output.backend ?? [],
+        database: tsResult.output.database ?? "postgresql",
+      },
+      fileCount: totalFiles,
+      qualityScore: principalResult.output.overallQuality,
+      lessons: principalResult.output.requiredChanges ?? [],
+    });
+
     this.emitter?.pipelineComplete(
       projectId,
       status,
@@ -291,6 +338,9 @@ export class Orchestrator {
     logger.info(`Score: ${principalResult.output.overallQuality}/10`);
     logger.info(`Project: ${projectDir}`);
     logger.info(`ZIP: ${zipPath}`);
+
+    // Print token usage summary to terminal
+    this.tokenTracker.printSummary();
 
     return {
       projectId,
@@ -322,6 +372,8 @@ export class Orchestrator {
       apiKey: cfg.apiKey,
       model: cfg.model,
       temperature: this.config.llm.defaultTemperature,
+      baseUrl: 'baseUrl' in cfg ? (cfg as any).baseUrl : undefined,
+      tracker: this.tokenTracker,
     });
   }
 
@@ -333,18 +385,20 @@ export class Orchestrator {
         apiKey: cfg.apiKey,
         model: leaderCfg.model,
         temperature: this.config.llm.defaultTemperature,
+        baseUrl: 'baseUrl' in cfg ? (cfg as any).baseUrl : undefined,
+        tracker: this.tokenTracker,
       });
     }
     return this.createDefaultProvider();
   }
 
   /**
-   * Guard: check if we've exceeded the token limit (default 150k).
+   * Guard: check if we've exceeded the token limit (default 1.5M).
    * Logs current usage and throws if limit is hit.
    */
   private guardTokenLimit(): void {
     const total = this.tokenTracker.getTotalTokens();
-    const max = parseInt(process.env.MAX_TOKENS ?? "150000", 10);
+    const max = parseInt(process.env.MAX_TOKENS ?? "1500000", 10);
     logger.info(`Token usage: ${total.toLocaleString()} / ${max.toLocaleString()}`);
     this.tokenTracker.checkLimit(max);
   }

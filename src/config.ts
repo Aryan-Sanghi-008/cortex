@@ -10,7 +10,7 @@ export interface AppConfig {
     maxRetries: number;
     openai: { apiKey: string; model: string };
     gemini: { apiKey: string; model: string };
-    deepseek: { apiKey: string; model: string };
+    deepseek: { apiKey: string; model: string; baseUrl: string };
     leader: { provider?: LLMProviderName; model?: string };
   };
   outputDir: string;
@@ -28,7 +28,7 @@ export function loadConfig(): AppConfig {
       maxRetries: parseInt(process.env.MAX_RETRIES ?? "3", 10),
       openai: {
         apiKey: process.env.OPENAI_API_KEY ?? "",
-        model: process.env.OPENAI_MODEL ?? "gpt-4o",
+        model: process.env.OPENAI_MODEL ?? "gpt-5-nano",
       },
       gemini: {
         apiKey: process.env.GEMINI_API_KEY ?? "",
@@ -37,6 +37,7 @@ export function loadConfig(): AppConfig {
       deepseek: {
         apiKey: process.env.DEEPSEEK_API_KEY ?? "",
         model: process.env.DEEPSEEK_MODEL ?? "deepseek-chat",
+        baseUrl: process.env.DEEPSEEK_BASE_URL ?? "https://api.deepseek.com",
       },
       leader: {
         provider: process.env.LEADER_LLM_PROVIDER as

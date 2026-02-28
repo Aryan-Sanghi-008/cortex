@@ -21,7 +21,6 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
   const [deployUrl, setDeployUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch cost when platform changes
   useEffect(() => {
     fetch(`/api/projects/${projectId}/cost?platform=${platform}`)
       .then((r) => r.json())
@@ -74,72 +73,97 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
       id: "vercel",
       name: "Vercel",
       icon: "▲",
-      desc: "Best for frontend + serverless",
+      desc: "Best for frontend & serverless",
+      badge: "Popular",
     },
     {
       id: "railway",
       name: "Railway",
       icon: "🚂",
-      desc: "Full-stack + database",
+      desc: "Full-stack with database",
+      badge: "Full Stack",
     },
-    { id: "render", name: "Render", icon: "⚡", desc: "Free tier available" },
+    {
+      id: "render",
+      name: "Render",
+      icon: "⚡",
+      desc: "Free tier available",
+      badge: "Free Tier",
+    },
   ];
 
   return (
-    <div className="mt-8">
-      <h3 className="text-xl font-semibold mb-4">🚀 Deploy Your Project</h3>
+    <div>
+      <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2 mb-5">
+        <span className="text-lg">🚀</span> Deploy Your Project
+      </h3>
 
       {deployUrl ? (
-        <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
-          <div className="text-4xl mb-3">🎉</div>
-          <h4 className="text-lg font-bold text-green-400 mb-2">
+        <div className="p-8 glass rounded-xl neon-border-green text-center">
+          <div className="text-4xl mb-4">🎉</div>
+          <h4 className="text-lg font-bold text-neon-green mb-2">
             Deployed Successfully!
           </h4>
           <a
             href={deployUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-light underline font-mono text-sm"
+            className="text-accent-light underline font-mono text-sm hover:text-white transition-colors"
           >
             {deployUrl}
           </a>
           <button
             onClick={() => window.open(deployUrl, "_blank")}
-            className="mt-4 block mx-auto px-6 py-2.5 bg-green-500 rounded-lg text-white font-semibold text-sm"
+            className="mt-5 btn-primary text-sm py-2.5 px-6 mx-auto block"
           >
             Visit Site →
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Platform Selection */}
           <div className="space-y-3">
-            <div className="text-sm text-gray-400 mb-2">Select Platform</div>
+            <div className="text-[11px] text-gray-500 mb-2 font-medium uppercase tracking-wider">Select Platform</div>
             {platforms.map((p) => (
               <button
                 key={p.id}
                 onClick={() => setPlatform(p.id)}
-                className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 text-left group ${
                   platform === p.id
-                    ? "border-accent bg-accent/5"
-                    : "border-white/8 bg-white/2 hover:bg-white/4"
+                    ? "border-accent/40 bg-accent/5 shadow-lg shadow-accent/10"
+                    : "border-white/6 bg-white/2 hover:bg-white/4 hover:border-white/10"
                 }`}
               >
-                <span className="text-2xl">{p.icon}</span>
-                <div>
-                  <div className="text-sm font-semibold">{p.name}</div>
-                  <div className="text-xs text-gray-500">{p.desc}</div>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all ${
+                  platform === p.id ? 'bg-accent/15' : 'bg-white/5 group-hover:bg-white/8'
+                }`}>
+                  {p.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-white/80">{p.name}</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                      platform === p.id
+                        ? 'bg-accent/20 text-accent-light'
+                        : 'bg-white/5 text-gray-500'
+                    }`}>
+                      {p.badge}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-gray-500 mt-0.5">{p.desc}</div>
                 </div>
                 {platform === p.id && (
-                  <span className="ml-auto text-accent text-sm">✓</span>
+                  <span className="text-accent-light text-sm shrink-0">✓</span>
                 )}
               </button>
             ))}
           </div>
 
           {/* Cost Breakdown */}
-          <div className="bg-white/3 border border-white/8 rounded-xl p-5">
-            <h4 className="text-sm font-semibold mb-4">💰 Cost Breakdown</h4>
+          <div className="glass rounded-xl p-5 h-fit">
+            <h4 className="text-sm font-semibold text-white/80 mb-4 flex items-center gap-2">
+              <span>💰</span> Cost Estimate
+            </h4>
 
             {cost ? (
               <>
@@ -148,11 +172,11 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
                     <div key={i} className="flex justify-between text-sm">
                       <span className="text-gray-400">{item.label}</span>
                       <span
-                        className={
+                        className={`font-medium ${
                           item.amount === "Free"
-                            ? "text-green-400"
-                            : "text-gray-200"
-                        }
+                            ? "badge-success px-2 py-0.5 rounded-full text-[11px]"
+                            : "text-gray-200 font-mono tabular-nums"
+                        }`}
                       >
                         {item.amount}
                       </span>
@@ -160,21 +184,21 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
                   ))}
                 </div>
 
-                <div className="border-t border-white/8 pt-3 mb-4">
-                  <div className="flex justify-between text-base font-bold">
-                    <span>Total (one-time)</span>
-                    <span className="text-green-400">
-                      {cost.totalFormatted}
-                    </span>
-                  </div>
+                <div className="divider-glow mb-4" />
+
+                <div className="flex justify-between text-base font-bold mb-4">
+                  <span className="text-white/80">Total (one-time)</span>
+                  <span className="text-neon-green font-mono tabular-nums">
+                    {cost.totalFormatted}
+                  </span>
                 </div>
 
-                <div className="text-xs text-gray-500 mb-4">
-                  <div className="font-medium text-gray-400 mb-1">
-                    Monthly hosting: {cost.hosting.monthly}
+                <div className="glass rounded-lg p-3 text-[11px] text-gray-500 mb-5">
+                  <div className="font-medium text-gray-400 mb-1.5 flex items-center gap-1">
+                    <span className="text-xs">📊</span> Monthly hosting: <span className="text-gray-300">{cost.hosting.monthly}</span>
                   </div>
                   {cost.hosting.breakdown.map((line, i) => (
-                    <div key={i}>• {line}</div>
+                    <div key={i} className="text-[10px] leading-relaxed">• {line}</div>
                   ))}
                 </div>
 
@@ -182,25 +206,32 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
                   <button
                     onClick={handleDeploy}
                     disabled={deploying}
-                    className="flex-1 px-4 py-3 bg-linear-to-r from-accent to-purple-600 rounded-lg text-white font-semibold text-sm disabled:opacity-50 transition-all hover:-translate-y-0.5"
+                    className="flex-1 btn-primary text-sm py-2.5 flex items-center justify-center gap-2"
                   >
-                    {deploying ? "⏳ Deploying..." : "🚀 Deploy Now"}
+                    {deploying ? (
+                      <><span className="animate-spin">⏳</span> Deploying...</>
+                    ) : (
+                      <><span>🚀</span> Deploy Now</>
+                    )}
                   </button>
                   <button
                     onClick={handlePay}
-                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-gray-300 text-sm font-medium hover:bg-white/10 transition-colors"
+                    className="btn-secondary text-sm py-2.5 px-4 flex items-center gap-2"
                   >
-                    💳 Pay & Deploy
+                    <span>💳</span> Pay & Deploy
                   </button>
                 </div>
               </>
             ) : (
-              <div className="text-gray-500 text-sm">Loading cost...</div>
+              <div className="flex flex-col items-center justify-center py-8 text-gray-500 text-sm">
+                <span className="text-xl mb-2 animate-pulse">⏳</span>
+                Loading cost estimate...
+              </div>
             )}
 
             {error && (
-              <div className="mt-3 p-2.5 bg-red-500/10 rounded text-red-400 text-xs">
-                {error}
+              <div className="mt-3 p-3 bg-neon-red/5 border border-neon-red/15 rounded-lg text-neon-red text-[11px] flex items-center gap-2">
+                <span>⚠️</span> {error}
               </div>
             )}
           </div>

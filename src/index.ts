@@ -10,13 +10,13 @@ async function main(): Promise<void> {
   console.clear();
   console.log(
     chalk.bold.bgMagenta.white(
-      "\n  🧠 Cortex — AI Code Generation Platform  \n"
-    )
+      "\n  🧠 Cortex — AI Code Generation Platform  \n",
+    ),
   );
   console.log(
     chalk.dim(
-      "  Multi-agent AI code generation from natural language prompts\n"
-    )
+      "  Multi-agent AI code generation from natural language prompts\n",
+    ),
   );
   logger.divider();
 
@@ -29,7 +29,7 @@ async function main(): Promise<void> {
   } else {
     const rl = createInterface({ input, output });
     productIdea = await rl.question(
-      chalk.bold.cyan("📝 Enter your product idea: ")
+      chalk.bold.cyan("📝 Enter your product idea: "),
     );
     rl.close();
 
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
 
   if (!hasKey) {
     logger.error(
-      "No LLM API key configured. Copy .env.example to .env and set at least one API key."
+      "No LLM API key configured. Copy .env.example to .env and set at least one API key.",
     );
     process.exit(1);
   }
@@ -74,21 +74,30 @@ async function main(): Promise<void> {
     console.log(chalk.white(`  Name:     ${result.projectName}`));
     console.log(
       chalk.white(
-        `  Status:   ${result.status === "approved" ? chalk.green("APPROVED ✔") : chalk.red("REJECTED ✖")}`
-      )
+        `  Status:   ${result.status === "approved" ? chalk.green("APPROVED ✔") : chalk.red("REJECTED ✖")}`,
+      ),
+    );
+    console.log(
+      chalk.white(`  Score:    ${result.principalReview.overallQuality}/10`),
     );
     console.log(
       chalk.white(
-        `  Score:    ${result.principalReview.overallQuality}/10`
-      )
-    );
-    console.log(
-      chalk.white(
-        `  Files:    ${result.frontendCode.files.length + result.backendCode.files.length + result.databaseCode.files.length + result.qaCode.files.length + result.devopsCode.files.length}`
-      )
+        `  Files:    ${result.frontendCode.files.length + result.backendCode.files.length + result.databaseCode.files.length + result.qaCode.files.length + result.devopsCode.files.length}`,
+      ),
     );
     console.log(chalk.white(`  Project:  ${result.projectDir}`));
     console.log(chalk.white(`  ZIP:      ${result.zipPath}`));
+
+    // Token usage summary
+    if (result.costBreakdown) {
+      logger.divider();
+      console.log(chalk.bold("\nToken Usage:"));
+      console.log(chalk.white(`  Input:    ${result.costBreakdown.totalInputTokens.toLocaleString()} tokens`));
+      console.log(chalk.white(`  Output:   ${result.costBreakdown.totalOutputTokens.toLocaleString()} tokens`));
+      console.log(chalk.white(`  Total:    ${chalk.bold(result.costBreakdown.totalTokens.toLocaleString())} tokens`));
+      console.log(chalk.white(`  Cost:     ${chalk.green.bold(`$${result.costBreakdown.totalCost.toFixed(4)}`)}`));
+    }
+
     logger.divider();
   } catch (err) {
     spinner.stop();

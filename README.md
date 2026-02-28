@@ -15,6 +15,8 @@ Cortex takes a **natural language product idea** and runs it through a pipeline 
 7. **QA Execution Bot** — Reviews architecture for gaps, risks, security issues
 8. **DevOps Bot** — Designs CI/CD, Docker, deployment, monitoring
 9. **Leader Bot** — Principal Engineer review with scoring and approval gate
+10. **Project Bundle Bot** — Combines all outputs into a single bundle
+11. **Documentation Bot** — Generates documentation from the prompt / user input for the project
 
 ## Quick Start
 

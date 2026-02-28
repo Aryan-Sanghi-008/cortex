@@ -21,6 +21,15 @@ const ModuleAssignmentSchema = z.object({
   priority: z.enum(["high", "medium", "low"]),
 });
 
+const ApiEndpointSchema = z.object({
+  method: z.enum(["GET", "POST", "PATCH", "PUT", "DELETE"]).describe("HTTP method"),
+  path: z.string().describe("Full API path, e.g. /api/v1/users/:id"),
+  requestBody: z.string().optional().describe("TypeScript interface shape for request body"),
+  responseShape: z.string().describe("TypeScript interface shape for response"),
+  auth: z.enum(["public", "authenticated", "admin"]).describe("Auth requirement"),
+  description: z.string().describe("What this endpoint does"),
+});
+
 export const LeadAssignmentSchema = z.object({
   architectureDecisions: z.array(z.string()).min(1).describe("Key architecture decisions made"),
   folderStructure: z.array(z.string()).min(1).describe("Project folder structure lines"),
@@ -31,6 +40,7 @@ export const LeadAssignmentSchema = z.object({
     errorHandling: z.string(),
   }),
   techGuidelines: z.array(z.string()).min(1).describe("Technical guidelines devs must follow"),
+  apiContract: z.array(ApiEndpointSchema).default([]).describe("API contract: endpoints this team expects or provides"),
 });
 
 export type LeadAssignment = z.infer<typeof LeadAssignmentSchema>;
@@ -51,5 +61,13 @@ export const LEAD_ASSIGNMENT_SCHEMA_DESCRIPTION = `{
     codeStyle: string,
     errorHandling: string
   },
-  techGuidelines: string[]
+  techGuidelines: string[],
+  apiContract: [{
+    method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE",
+    path: string (e.g. "/api/v1/users/:id"),
+    requestBody?: string (TypeScript interface shape),
+    responseShape: string (TypeScript interface shape),
+    auth: "public" | "authenticated" | "admin",
+    description: string
+  }] — optional, defaults to []
 }`;

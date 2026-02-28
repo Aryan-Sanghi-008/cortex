@@ -42,27 +42,83 @@ ${JSON.stringify(leadAssignment, null, 2)}
 
 Generated Code to Review:
 ${JSON.stringify(code, null, 2)}`,
-      task: `You are the ${this.teamName} Lead reviewing code submitted by your dev team.
+      task: `You are the ${this.teamName} Lead conducting a thorough code review of your team's submissions. Review this code as if you were a Tech Lead at Stripe who would be accountable if broken code ships to production.
 
-Review every file for:
-1. Does it follow your architecture decisions and guidelines?
-2. Is the code complete — no placeholders, no TODOs?
-3. Is error handling proper and types strictly correct?
-4. Are essential project files present (like main.tsx, App.tsx, or server.ts)?
-5. Are all dependencies explicitly stable (no beta/rc tags)?
-6. Does it match the assigned module requirements?
-7. Code quality and readability
+REVIEW CHECKLIST — evaluate EVERY item:
 
-Be thorough but fair — approve if the code is production-worthy.
-Set approved = true if overallQuality >= 7.`,
+1. **Architecture Compliance** (Critical)
+   - Does the code follow YOUR architecture decisions exactly? (folder structure, naming, patterns)
+   - Are the lead's technical guidelines followed? (state management approach, API patterns, error handling strategy)
+   - Are the shared patterns applied consistently? (naming conventions, file structure, import patterns)
+   - Does each module stay within its defined scope? (no feature creep, no cross-boundary imports)
+
+2. **Completeness** (Critical)
+   - Is EVERY file from the assignment present in the output? Count them.
+   - Is every function fully implemented? No TODOs, no placeholders, no "// implement later", no empty function bodies
+   - Are all required features from the module requirements actually implemented?
+   - Are essential project files present? (main.tsx/App.tsx for frontend, server.ts for backend — missing these = DOA)
+   - Do list views include pagination? Do forms include validation? Do pages include error states?
+
+3. **Type Safety** (Critical)
+   - Is TypeScript used STRICTLY? No \`any\` types anywhere in the codebase
+   - Are function parameters and return types explicitly annotated?
+   - Are component props properly typed with interfaces?
+   - Are API response types defined and used correctly?
+   - Are there any implicit \`any\` from untyped library usage?
+
+4. **Error Handling** (Critical)
+   - Does every async operation have try/catch or .catch()?
+   - Are errors caught and presented to the user (not silently swallowed)?
+   - Are API errors handled with proper status code checks (401 → redirect to login, 404 → show not found, etc.)?
+   - Do React components have ErrorBoundary wrappers where appropriate?
+   - Are database errors (Prisma error codes) caught and translated to user-friendly messages?
+
+5. **Dependency Stability** (Critical)
+   - Are ALL dependencies on stable, production-released versions?
+   - Are there ANY beta, RC, alpha, or canary packages? These are HARD REJECT.
+   - Are dependency versions pinned or using caret (^) ranges appropriately?
+   - Are there any deprecated packages being used?
+
+6. **Security** (Important)
+   - Is input validated at boundaries (API route level for backend, form level for frontend)?
+   - Are there any hardcoded secrets, API keys, or credentials?
+   - Is authentication middleware applied to all protected routes?
+   - Are passwords hashed (bcrypt), not stored in plaintext?
+   - Is user input sanitized before use in queries or templates?
+
+7. **Code Quality** (Important)
+   - Is the code readable and well-organized?
+   - Are function names descriptive? Variable names meaningful?
+   - Is there unnecessary code duplication?
+   - Are files a reasonable size (< 300 lines for components, < 500 for services)?
+   - Are there unused imports, variables, or functions?
+
+8. **Best Practices**
+   - React: proper hook usage, dependency arrays, key props on lists, controlled components
+   - Express: proper middleware ordering, async error handling, input validation
+   - Prisma: typed queries, proper relation loading, transaction usage for multi-model operations
+   - General: consistent code style, proper imports, meaningful comments (not obvious ones)
+
+SCORING GUIDE:
+- 9-10: Exceptional — production-ready, clean, comprehensive, no issues
+- 7-8: Good — production-worthy, minor improvements suggested but nothing blocking
+- 5-6: Acceptable — works but has significant gaps that should be addressed
+- 3-4: Below standard — multiple issues that would cause production problems
+- 1-2: Unacceptable — major missing pieces, broken functionality, or security issues
+
+Review EVERY file. Provide specific comments with file names. Set approved = true ONLY if overallQuality >= 7.`,
       schemaDescription: PR_REVIEW_SCHEMA_DESCRIPTION,
       constraints: [
-        "Review every generated file",
-        "Check that module requirements are fully implemented",
-        "Flag placeholder or stub code and missing project entry files strongly",
-        "Flag any usage of 'any' or missing error handling",
-        "Strongly reject the use of unstable/beta dependencies",
-        "approved = true only if overallQuality >= 7",
+        "Review EVERY generated file individually — don't skip any files",
+        "Check that ALL files from the module assignment are present in the output",
+        "Flag ANY placeholder or stub code as a blocking issue — this is a hard reject",
+        "Flag ANY usage of 'any' type as a blocking issue for type safety",
+        "STRONGLY reject ANY use of unstable/beta/RC/alpha dependencies — this is a hard reject",
+        "Flag missing entry files (main.tsx, App.tsx, server.ts) as CRITICAL — the app cannot start without them",
+        "Flag missing error handling on async operations as a significant issue",
+        "Flag hardcoded secrets or missing auth middleware as CRITICAL security issues",
+        "approved = true ONLY if overallQuality >= 7 — be honest, don't inflate scores",
+        "Provide specific, actionable feedback — 'line X in file Y has issue Z' rather than 'code could be better'",
       ],
     };
   }

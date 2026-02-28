@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { TokenTracker } from "../utils/token-tracker.js";
 
 // ─── Provider Names ───────────────────────────────────────────
 export enum LLMProviderName {
@@ -13,6 +14,9 @@ export interface LLMConfig {
   model: string;
   temperature: number;
   maxTokens?: number;
+  baseUrl?: string;
+  tracker?: TokenTracker;
+  botName?: string;
 }
 
 // ─── Chat message format ──────────────────────────────────────

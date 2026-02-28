@@ -7,17 +7,22 @@ import {
   LLMProviderName,
 } from "../types.js";
 import { logger } from "../../utils/logger.js";
+import type { TokenTracker } from "../../utils/token-tracker.js";
 
 export class OpenAIProvider implements LLMProvider {
   readonly name = LLMProviderName.OPENAI;
   private client: OpenAI;
   private model: string;
   private defaultTemperature: number;
+  private tracker?: TokenTracker;
+  private botName: string;
 
   constructor(config: LLMConfig) {
     this.client = new OpenAI({ apiKey: config.apiKey });
     this.model = config.model;
     this.defaultTemperature = config.temperature;
+    this.tracker = config.tracker;
+    this.botName = config.botName ?? "OpenAI";
   }
 
   async generateStructuredOutput<T>(
@@ -47,6 +52,16 @@ export class OpenAIProvider implements LLMProvider {
     const raw = response.choices[0]?.message?.content ?? "{}";
     logger.bot("OpenAI", `Received ${raw.length} chars`);
 
+    // Track token usage from API response
+    if (this.tracker && response.usage) {
+      this.tracker.recordExact(
+        this.botName,
+        this.model,
+        response.usage.prompt_tokens ?? 0,
+        response.usage.completion_tokens ?? 0
+      );
+    }
+
     const parsed = JSON.parse(raw);
     return schema.parse(parsed);
   }
@@ -63,6 +78,16 @@ export class OpenAIProvider implements LLMProvider {
       temperature: request.temperature ?? this.defaultTemperature,
       max_tokens: request.maxTokens ?? 4096,
     });
+
+    // Track token usage from API response
+    if (this.tracker && response.usage) {
+      this.tracker.recordExact(
+        this.botName,
+        this.model,
+        response.usage.prompt_tokens ?? 0,
+        response.usage.completion_tokens ?? 0
+      );
+    }
 
     return response.choices[0]?.message?.content ?? "";
   }

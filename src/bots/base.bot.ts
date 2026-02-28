@@ -6,6 +6,7 @@ import { validateOutput, formatValidationErrors } from "../validation/validator.
 import { buildPrompt, PromptParts } from "../utils/prompt-builder.js";
 import { withRetry } from "../utils/retry.js";
 import { logger } from "../utils/logger.js";
+import { llmCache } from "../llm/llm-cache.js";
 
 /**
  * Abstract base bot — handles the common LLM call → validate → retry loop.
@@ -59,6 +60,21 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
 
         const { system, user } = buildPrompt(parts);
 
+        // ─── Check LLM cache (skip on retries — they have different prompts) ───
+        if (lastErrors.length === 0) {
+          const cached = await llmCache.get(system, user);
+          if (cached) {
+            logger.bot(this.instanceId, `Cache HIT — skipping LLM call`);
+            const parsed = JSON.parse(cached) as TOutput;
+            const validation = validateOutput(parsed, this.schema);
+            if (validation.success) {
+              return validation.data!;
+            }
+            // Cache had invalid data — fall through to LLM call
+            logger.warn(`${this.instanceId} cache entry invalid, calling LLM`);
+          }
+        }
+
         const result = await this.llm.generateStructuredOutput(
           {
             messages: [
@@ -78,6 +94,9 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
             `Schema validation failed: ${lastErrors.join(", ")}`
           );
         }
+
+        // ─── Store in cache on success ───
+        await llmCache.set(system, user, JSON.stringify(validation.data), "cached");
 
         return validation.data!;
       },

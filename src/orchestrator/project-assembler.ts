@@ -50,23 +50,18 @@ export class ProjectAssembler {
     // Generate package.json if not already created by a bot
     const hasPackageJson = allFiles.some((f) => f.path === "package.json");
     if (!hasPackageJson) {
+      const scripts = this.detectScripts(allFiles.map((f) => f.path));
       const packageJson = {
         name: projectName.toLowerCase().replace(/\s+/g, "-"),
         version: "1.0.0",
         private: true,
         type: "module",
-        scripts: {
-          dev: "next dev",
-          build: "next build",
-          start: "next start",
-          test: "vitest run",
-          lint: "eslint . --ext .ts,.tsx",
-        },
+        scripts,
         dependencies: Object.fromEntries(
-          [...allDeps].map((d) => [d, "latest"])
+          [...allDeps].map((d) => [d, "*"])
         ),
         devDependencies: Object.fromEntries(
-          [...allDevDeps].map((d) => [d, "latest"])
+          [...allDevDeps].map((d) => [d, "*"])
         ),
       };
       await fs.writeFile(
@@ -84,6 +79,58 @@ export class ProjectAssembler {
     logger.success(`ZIP created → ${zipPath}`);
 
     return { projectDir, zipPath };
+  }
+
+  /**
+   * Detect the correct package.json scripts based on generated file paths.
+   */
+  private detectScripts(filePaths: string[]): Record<string, string> {
+    const hasViteConfig = filePaths.some(
+      (f) => f.includes("vite.config") || f.includes("vite.config.ts")
+    );
+    const hasNextConfig = filePaths.some(
+      (f) => f.includes("next.config") || f.includes("app/layout.tsx")
+    );
+    const hasServerTs = filePaths.some(
+      (f) => f === "src/server.ts" || f === "src/index.ts"
+    );
+
+    const scripts: Record<string, string> = {};
+
+    // Frontend scripts
+    if (hasNextConfig) {
+      scripts.dev = "next dev";
+      scripts.build = "next build";
+      scripts.start = "next start";
+    } else if (hasViteConfig) {
+      scripts.dev = "vite";
+      scripts.build = "vite build";
+      scripts.preview = "vite preview";
+    }
+
+    // Backend scripts
+    if (hasServerTs) {
+      const serverFile = filePaths.find(
+        (f) => f === "src/server.ts" || f === "src/index.ts"
+      )!;
+      scripts["dev:server"] = scripts.dev
+        ? `tsx ${serverFile}`
+        : undefined as unknown as string;
+      if (!scripts.dev) {
+        scripts.dev = `tsx ${serverFile}`;
+        scripts.start = `node dist/${serverFile.replace("src/", "").replace(".ts", ".js")}`;
+        scripts.build = "tsc";
+      }
+    }
+
+    // Always include test and lint
+    scripts.test = "vitest run";
+    scripts.lint = "eslint . --ext .ts,.tsx";
+
+    // Clean up undefined values
+    return Object.fromEntries(
+      Object.entries(scripts).filter(([, v]) => v !== undefined)
+    );
   }
 
   private async createZip(

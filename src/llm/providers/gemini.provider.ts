@@ -7,17 +7,22 @@ import {
   LLMProviderName,
 } from "../types.js";
 import { logger } from "../../utils/logger.js";
+import type { TokenTracker } from "../../utils/token-tracker.js";
 
 export class GeminiProvider implements LLMProvider {
   readonly name = LLMProviderName.GEMINI;
   private client: GoogleGenerativeAI;
   private model: string;
   private defaultTemperature: number;
+  private tracker?: TokenTracker;
+  private botName: string;
 
   constructor(config: LLMConfig) {
     this.client = new GoogleGenerativeAI(config.apiKey);
     this.model = config.model;
     this.defaultTemperature = config.temperature;
+    this.tracker = config.tracker;
+    this.botName = config.botName ?? "Gemini";
   }
 
   async generateStructuredOutput<T>(
@@ -45,6 +50,17 @@ export class GeminiProvider implements LLMProvider {
     const raw = result.response.text();
     logger.bot("Gemini", `Received ${raw.length} chars`);
 
+    // Track token usage from API response
+    if (this.tracker && result.response.usageMetadata) {
+      const usage = result.response.usageMetadata;
+      this.tracker.recordExact(
+        this.botName,
+        this.model,
+        usage.promptTokenCount ?? 0,
+        usage.candidatesTokenCount ?? 0
+      );
+    }
+
     const parsed = JSON.parse(raw);
     return schema.parse(parsed);
   }
@@ -64,6 +80,18 @@ export class GeminiProvider implements LLMProvider {
       request.messages.find((m) => m.role === "user")?.content ?? "";
 
     const result = await model.generateContent(`${systemMsg}\n\n${userMsg}`);
+
+    // Track token usage from API response
+    if (this.tracker && result.response.usageMetadata) {
+      const usage = result.response.usageMetadata;
+      this.tracker.recordExact(
+        this.botName,
+        this.model,
+        usage.promptTokenCount ?? 0,
+        usage.candidatesTokenCount ?? 0
+      );
+    }
+
     return result.response.text();
   }
 }

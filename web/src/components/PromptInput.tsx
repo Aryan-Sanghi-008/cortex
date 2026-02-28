@@ -8,6 +8,7 @@ interface Props {
 export const PromptInput: React.FC<Props> = ({ onSubmit, loading }) => {
   const [idea, setIdea] = useState("");
   const [fileNames, setFileNames] = useState<string[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
   const filesRef = useRef<FileList | undefined>(undefined);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -24,25 +25,45 @@ export const PromptInput: React.FC<Props> = ({ onSubmit, loading }) => {
     }
   };
 
+  const charCount = idea.length;
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-bg-secondary border border-white/8 rounded-xl p-6 mt-8"
+      className={`glass rounded-2xl p-6 transition-all duration-300 ${
+        isFocused
+          ? "neon-border-purple shadow-lg shadow-accent/5"
+          : "border-border"
+      }`}
     >
+      {/* Label */}
+      <div className="flex items-center justify-between mb-3">
+        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+          Describe Your Product
+        </label>
+        <span className={`text-[11px] font-mono transition-colors ${charCount > 0 ? 'text-gray-500' : 'text-transparent'}`}>
+          {charCount} chars
+        </span>
+      </div>
+
+      {/* Textarea */}
       <textarea
-        className="w-full min-h-[120px] bg-bg-tertiary border border-white/8 rounded-lg p-4 text-gray-100 text-[15px] font-sans resize-y transition-all duration-200 placeholder:text-gray-500 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-        placeholder={
-          "Describe your product idea...\n\ne.g. Build a SaaS HR management system with employee onboarding, leave management, payroll integration, and role-based dashboards."
-        }
+        className="input-area w-full min-h-32 bg-bg-tertiary/60 border border-white/6 rounded-xl p-4 text-gray-100 text-[14px] font-sans leading-relaxed resize-y transition-all duration-300 placeholder:text-gray-600 focus:outline-none focus:border-accent/40 focus:bg-bg-tertiary/80"
+        placeholder="Build a SaaS platform with team management, role-based dashboards, real-time notifications, Stripe billing integration, and an admin panel..."
         value={idea}
         onChange={(e) => setIdea(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         disabled={loading}
       />
 
+      {/* Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 gap-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          <label className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-white/10 rounded-lg cursor-pointer text-gray-400 text-sm transition-all hover:border-accent hover:text-accent-light">
-            📎 Upload References
+        <div className="flex items-center gap-3 flex-wrap">
+          <label className="btn-secondary flex items-center gap-2 cursor-pointer text-sm py-2 px-4">
+            <span className="text-base">📎</span>
+            <span>Reference Images</span>
             <input
               type="file"
               multiple
@@ -53,20 +74,38 @@ export const PromptInput: React.FC<Props> = ({ onSubmit, loading }) => {
             />
           </label>
           {fileNames.length > 0 && (
-            <span className="text-xs text-gray-500">
-              {fileNames.length} file(s)
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="badge-success text-[11px] px-2 py-0.5 rounded-full">
+                {fileNames.length} file{fileNames.length > 1 ? 's' : ''} attached
+              </span>
+            </div>
           )}
         </div>
-
         <button
           type="submit"
           disabled={loading || !idea.trim()}
-          className="px-8 py-3 bg-linear-to-r from-accent to-purple-600 rounded-lg text-white font-semibold text-[15px] shadow-lg shadow-accent/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
+          className="btn-primary flex items-center gap-2 text-sm"
         >
-          {loading ? "⏳ Generating..." : "🚀 Generate Project"}
+          {loading ? (
+            <>
+              <span className="animate-spin inline-block">⏳</span>
+              <span>Generating...</span>
+            </>
+          ) : (
+            <>
+              <span>🚀</span>
+              <span>Generate Project</span>
+            </>
+          )}
         </button>
       </div>
+
+      {/* Hint */}
+      {!idea.trim() && !loading && (
+        <p className="text-[11px] text-gray-600 mt-3 leading-relaxed">
+          💡 Tip: Be specific about features, user roles, integrations, and UI preferences for best results.
+        </p>
+      )}
     </form>
   );
 };

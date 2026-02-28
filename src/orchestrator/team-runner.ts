@@ -6,9 +6,10 @@ import { FrontendDevBot } from "../bots/frontend/frontend-dev.bot.js";
 import { BackendDevBot } from "../bots/backend/backend-dev.bot.js";
 import { WSEmitter } from "../server/ws-emitter.js";
 import { logger } from "../utils/logger.js";
+import { runWithConcurrency } from "../utils/concurrency.js";
 import type { CodeOutput, LeadAssignment, PRReview } from "../validation/index.js";
 
-const MAX_REVIEW_LOOPS = 2;
+const MAX_REVIEW_LOOPS = 3;
 
 interface TeamRunResult {
   code: CodeOutput;
@@ -98,11 +99,14 @@ export class TeamRunner {
       this.emitter?.botStart(projectId, `${teamName}-Devs`, "Generating code");
       logger.bot(`${teamName}-Team`, `Dev cycle ${loop + 1}: generating code for ${leadAssignment.modules.length} modules`);
 
-      const devResults: BotResult<CodeOutput>[] = await Promise.all(
+      const devResults: BotResult<CodeOutput>[] = await runWithConcurrency(
         leadAssignment.modules.map((_, index) => {
-          const devBot = opts.createDevBot(index);
-          return devBot.execute(memory);
-        })
+          return () => {
+            const devBot = opts.createDevBot(index);
+            return devBot.execute(memory);
+          };
+        }),
+        5 // Max 5 concurrent LLM calls (Gemini free: 15 RPM)
       );
 
       // Merge all dev bot outputs into a single CodeOutput

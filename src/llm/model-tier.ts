@@ -20,9 +20,9 @@ interface TierModels {
 /** Default model per tier per provider */
 const TIER_MODELS: Record<LLMProviderName, TierModels> = {
   openai: {
-    cheap: "gpt-4o-mini",
-    standard: "gpt-4o",
-    premium: "gpt-4o",
+    cheap: "gpt-5-nano",
+    standard: "gpt-5-nano",
+    premium: "gpt-4o-mini",
   },
   gemini: {
     cheap: "gemini-2.0-flash",
@@ -30,9 +30,9 @@ const TIER_MODELS: Record<LLMProviderName, TierModels> = {
     premium: "gemini-2.5-pro-preview-05-06",
   },
   deepseek: {
-    cheap: "deepseek-chat",
-    standard: "deepseek-chat",
-    premium: "deepseek-chat",
+    cheap: "deepseek-ai/deepseek-r1-distill-llama-70b",
+    standard: "deepseek-ai/deepseek-r1-distill-llama-70b",
+    premium: "deepseek-ai/deepseek-r1-distill-llama-70b",
   },
 };
 
