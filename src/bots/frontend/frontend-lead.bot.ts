@@ -98,6 +98,7 @@ Think like a senior lead assigning work to mid-level developers — your assignm
         "Every module must specify error handling, loading state, and empty state requirements",
         "Define shared patterns for consistent form handling, data fetching, and error display across all modules",
         "MUST populate apiContract with EVERY API endpoint the frontend expects to call — include method, path, request body shape, response shape, and auth level. This will be cross-checked against the backend's API contract to catch mismatches early.",
+        "CRITICAL: Be CONCISE in all descriptions and approaches. Keep JSON payload size below 20KB to avoid API truncation. Do NOT write paragraphs when a single sentence works.",
       ],
     };
   }

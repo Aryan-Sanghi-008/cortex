@@ -45,17 +45,17 @@ const BOT_TIER_MAP: Record<string, ModelTier> = {
   "ResourcePlanner": "cheap",
 
   // Dev bots → standard
-  "Frontend-Lead": "standard",
-  "Backend-Lead": "standard",
+  "Frontend-Lead": "premium",
+  "Backend-Lead": "premium",
   "Frontend-Dev": "standard",
   "Backend-Dev": "standard",
-  "Database-Lead": "standard",
+  "Database-Lead": "premium",
   "QA-Lead": "standard",
-  "DevOps": "standard",
+  "DevOps": "premium",
 
   // Review bots → premium
   "Principal-Engineer": "premium",
-  "Lead-Review": "standard",
+  "Lead-Review": "premium",
 };
 
 export function getModelForBot(

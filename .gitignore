@@ -6,3 +6,5 @@ output/
 .env.example
 *.log
 package-lock.json
+.cortex-cache
+.DS_Store

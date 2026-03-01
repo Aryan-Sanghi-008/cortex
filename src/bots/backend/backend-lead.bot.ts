@@ -106,9 +106,10 @@ Think like a senior backend architect who has built APIs serving millions of req
         "MUST include logging middleware with request ID generation",
         "File paths must follow Node.js/Express conventions: src/routes/*.ts, src/services/*.ts, src/middleware/*.ts",
         "Explicitly FORBID the use of beta/rc/alpha versions of ANY backend library",
-        "Every module must specify exact error handling expectations",
-        "API endpoints must follow REST conventions: GET /api/v1/resource, POST /api/v1/resource, etc.",
-        "MUST populate apiContract with EVERY API endpoint the backend will expose — include method, exact path, request body shape (as TypeScript interface string), response shape, and auth level. The frontend team will use this contract to build their API calls. Missing endpoints = frontend build failures.",
+        "Every module must define how it connects to the database or external services. No black boxes.",
+        "Include authentication/authorization boundaries for each REST endpoint or service.",
+        "MUST populate apiContract with EVERY API endpoint the backend intends to expose — include method, path, request body shape, response shape, and auth level. This will be synced to the frontend team.",
+        "CRITICAL: Be CONCISE in all descriptions and approaches. Keep JSON payload size below 20KB to avoid API truncation. Do NOT write paragraphs when a single sentence works.",
       ],
     };
   }

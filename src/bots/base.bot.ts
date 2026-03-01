@@ -68,6 +68,9 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
             const parsed = JSON.parse(cached) as TOutput;
             const validation = validateOutput(parsed, this.schema);
             if (validation.success) {
+              // Artificial delay so the UI registers the bot as running -> done
+              // rather than instantly completing before the UI catches up
+              await new Promise(resolve => setTimeout(resolve, 1500));
               return validation.data!;
             }
             // Cache had invalid data — fall through to LLM call

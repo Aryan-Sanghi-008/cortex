@@ -26,7 +26,7 @@ const ApiEndpointSchema = z.object({
   path: z.string().describe("Full API path, e.g. /api/v1/users/:id"),
   requestBody: z.string().optional().describe("TypeScript interface shape for request body"),
   responseShape: z.string().describe("TypeScript interface shape for response"),
-  auth: z.enum(["public", "authenticated", "admin"]).describe("Auth requirement"),
+  auth: z.enum(["public", "authenticated", "admin"]).catch("authenticated").describe("Auth requirement — MUST be exactly 'public', 'authenticated', or 'admin'. Do NOT use 'authorized'."),
   description: z.string().describe("What this endpoint does"),
 });
 
@@ -67,7 +67,7 @@ export const LEAD_ASSIGNMENT_SCHEMA_DESCRIPTION = `{
     path: string (e.g. "/api/v1/users/:id"),
     requestBody?: string (TypeScript interface shape),
     responseShape: string (TypeScript interface shape),
-    auth: "public" | "authenticated" | "admin",
+    auth: "public" | "authenticated" | "admin" (DO NOT use "authorized"),
     description: string
   }] — optional, defaults to []
 }`;

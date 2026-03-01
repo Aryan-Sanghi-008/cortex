@@ -244,7 +244,7 @@ export class Orchestrator {
           return qaDevBot.execute(memory);
         };
       }),
-      5 // Max 5 concurrent (Gemini free: 15 RPM)
+      3 // Max 3 concurrent (Gemini free: 15 RPM max)
     );
     
     const mergedQaCode: CodeOutput = {

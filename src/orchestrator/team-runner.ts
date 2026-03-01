@@ -106,7 +106,7 @@ export class TeamRunner {
             return devBot.execute(memory);
           };
         }),
-        5 // Max 5 concurrent LLM calls (Gemini free: 15 RPM)
+        3 // Max 3 concurrent LLM calls (Gemini free: 15 RPM)
       );
 
       // Merge all dev bot outputs into a single CodeOutput

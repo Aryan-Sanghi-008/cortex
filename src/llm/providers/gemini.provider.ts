@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { jsonrepair } from "jsonrepair";
 import { z } from "zod";
 import {
   LLMConfig,
@@ -33,7 +34,7 @@ export class GeminiProvider implements LLMProvider {
       model: this.model,
       generationConfig: {
         temperature: request.temperature ?? this.defaultTemperature,
-        maxOutputTokens: request.maxTokens ?? 4096,
+        maxOutputTokens: request.maxTokens ?? 16384,
         responseMimeType: "application/json",
       },
     });
@@ -61,7 +62,20 @@ export class GeminiProvider implements LLMProvider {
       );
     }
 
-    const parsed = JSON.parse(raw);
+    // Try direct parse first, then attempt robust repair if truncated
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      logger.warn(`Gemini JSON truncated (${raw.length} chars), using jsonrepair...`);
+      try {
+        parsed = JSON.parse(jsonrepair(raw));
+      } catch (repairErr) {
+        logger.error(`Failed to repair JSON: ${repairErr}`);
+        throw repairErr;
+      }
+    }
+
     return schema.parse(parsed);
   }
 
@@ -70,7 +84,7 @@ export class GeminiProvider implements LLMProvider {
       model: this.model,
       generationConfig: {
         temperature: request.temperature ?? this.defaultTemperature,
-        maxOutputTokens: request.maxTokens ?? 4096,
+        maxOutputTokens: request.maxTokens ?? 16384,
       },
     });
 
