@@ -3,7 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
-import { formatTechStack } from "../../utils/context-compressor.js";
+import { formatTechStack, formatProductSpec, formatCodebase } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -26,11 +26,10 @@ export class DataDevBot extends BaseBot<CodeOutput> {
       role: BotRole.DATA_DEV,
       context: `${formatTechStack(techStack)}
 
-Project Documentation:
-${JSON.stringify(doc)}
+${formatProductSpec(doc)}
 
-Database Lead Design (Prisma schema, db.ts, seed):
-${JSON.stringify(dbLeadOutput)}`,
+## Database Lead Design (Prisma schema, db.ts, seed):
+${formatCodebase(dbLeadOutput as any)}`,
       task: `You are the Data Developer — a senior engineer specializing in data access layers. Build the complete repository/data access layer based on the Database Lead's schema.
 
 Generate the following files:

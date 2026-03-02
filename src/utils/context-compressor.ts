@@ -166,3 +166,30 @@ export function formatApiContract(contract: any[]): string {
     `- ${api.method} ${api.path} (Auth: ${api.auth})\n  - Req: ${api.requestBody || "none"}\n  - Res: ${api.responseShape}\n  - Desc: ${api.description}`
   ).join("\n");
 }
+
+// Formats a full codebase into raw unescaped Markdown fences.
+// This prevents the JSON.stringify bloat of \n and \".
+export function formatCodebase(codeOutput: {
+  files: Array<{ path: string; content: string; language: string }>;
+  dependencies?: string[];
+  devDependencies?: string[];
+}): string {
+  if (!codeOutput || !codeOutput.files) return "No code generated.";
+  
+  let out = "";
+  for (const file of codeOutput.files) {
+    out += `\n### ${file.path}\n`;
+    out += `\`\`\`${file.language || ""}\n`;
+    out += file.content;
+    out += `\n\`\`\`\n`;
+  }
+
+  if (codeOutput.dependencies?.length) {
+    out += `\n### Dependencies\n${codeOutput.dependencies.join(", ")}\n`;
+  }
+  if (codeOutput.devDependencies?.length) {
+    out += `\n### Dev Dependencies\n${codeOutput.devDependencies.join(", ")}\n`;
+  }
+
+  return out;
+}

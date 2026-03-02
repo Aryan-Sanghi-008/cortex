@@ -20,8 +20,8 @@ export class QALeadBot extends BaseBot<LeadAssignment> {
   protected buildPromptParts(memory: ShortTermMemory): PromptParts {
     const doc = memory.get("documentation");
     const techStack = memory.get("tech-stack");
-    const frontendCode = memory.get("frontend-code");
-    const backendCode = memory.get("backend-code");
+    const frontendCodeSummary = memory.get("frontend-code-summary");
+    const backendCodeSummary = memory.get("backend-code-summary");
 
     return {
       role: BotRole.QA,
@@ -29,11 +29,11 @@ export class QALeadBot extends BaseBot<LeadAssignment> {
 
 ${formatProductSpec(doc)}
 
-Frontend Code Generated:
-${JSON.stringify(frontendCode)}
+Frontend Codebase Structure:
+${frontendCodeSummary}
 
-Backend Code Generated:
-${JSON.stringify(backendCode)}`,
+Backend Codebase Structure:
+${backendCodeSummary}`,
       task: `You are the QA Lead — a senior QA architect responsible for designing a comprehensive test strategy that ensures this application is production-ready. Think like a QA Lead at Stripe who would be fired if a bug reaches production.
 
 Design the complete testing architecture:

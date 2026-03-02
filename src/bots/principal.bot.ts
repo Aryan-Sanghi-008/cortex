@@ -3,7 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
-import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
+import { formatTechStack, formatProductSpec, formatCodebase } from "../utils/context-compressor.js";
 import {
   PRReview,
   PRReviewSchema,
@@ -36,20 +36,20 @@ export class PrincipalBot extends BaseBot<PRReview> {
 
 ${formatProductSpec(doc)}
 
-Frontend Code:
-${JSON.stringify(frontendCode)}
+## Frontend Code:
+${formatCodebase(frontendCode as any)}
 
-Backend Code:
-${JSON.stringify(backendCode)}
+## Backend Code:
+${formatCodebase(backendCode as any)}
 
-Database Code:
-${JSON.stringify(dbCode)}
+## Database Code:
+${formatCodebase(dbCode as any)}
 
-Test Code:
-${JSON.stringify(qaCode)}
+## Test Code:
+${formatCodebase(qaCode as any)}
 
-DevOps Code:
-${JSON.stringify(devopsCode)}`,
+## DevOps Code:
+${formatCodebase(devopsCode as any)}`,
       task: `You are the Principal Engineer / CTO performing the FINAL technical review before this project ships to production. If you approve, this code goes live. If there are critical issues, they WILL affect real users.
 
 This is the most critical review in the pipeline. You must evaluate the ENTIRE system holistically — not just individual files, but how everything works together.

@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { formatLeadAssignment, formatCodebase } from "../utils/context-compressor.js";
 import {
   PRReview,
   PRReviewSchema,
@@ -37,11 +38,10 @@ export class LeadReviewerBot extends BaseBot<PRReview> {
 
     return {
       role: this.role,
-      context: `Lead Architecture Assignment:
-${JSON.stringify(leadAssignment)}
+      context: `${formatLeadAssignment(leadAssignment)}
 
-Generated Code to Review:
-${JSON.stringify(code)}`,
+## Generated Code to Review:
+${formatCodebase(code as any)}`,
       task: `You are the ${this.teamName} Lead conducting a thorough code review of your team's submissions. Review this code as if you were a Tech Lead at Stripe who would be accountable if broken code ships to production.
 
 REVIEW CHECKLIST — evaluate EVERY item:

@@ -3,7 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
-import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
+import { formatTechStack, formatProductSpec, formatLeadAssignment, formatCodebase } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -35,11 +35,11 @@ ${formatLeadAssignment(qaLeadOutput)}
 
 ${formatProductSpec(doc)}
 
-Frontend Code Generated:
-${JSON.stringify(frontendCode)}
+## Frontend Code Generated:
+${formatCodebase(frontendCode as any)}
 
-Backend Code Generated:
-${JSON.stringify(backendCode)}`,
+## Backend Code Generated:
+${formatCodebase(backendCode as any)}`,
       task: `You are a Senior QA Developer. Write COMPREHENSIVE, RUNNABLE test files based on the QA Lead's architecture and the actual generated application code.
 
 Your tests must be thorough enough that if they all pass, you would confidently deploy to production.
