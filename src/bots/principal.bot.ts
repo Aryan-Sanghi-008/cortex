@@ -32,25 +32,25 @@ export class PrincipalBot extends BaseBot<PRReview> {
     return {
       role: BotRole.PRINCIPAL,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}
+${JSON.stringify(techStack)}
 
 Frontend Code:
-${JSON.stringify(frontendCode, null, 2)}
+${JSON.stringify(frontendCode)}
 
 Backend Code:
-${JSON.stringify(backendCode, null, 2)}
+${JSON.stringify(backendCode)}
 
 Database Code:
-${JSON.stringify(dbCode, null, 2)}
+${JSON.stringify(dbCode)}
 
 Test Code:
-${JSON.stringify(qaCode, null, 2)}
+${JSON.stringify(qaCode)}
 
 DevOps Code:
-${JSON.stringify(devopsCode, null, 2)}`,
+${JSON.stringify(devopsCode)}`,
       task: `You are the Principal Engineer / CTO performing the FINAL technical review before this project ships to production. If you approve, this code goes live. If there are critical issues, they WILL affect real users.
 
 This is the most critical review in the pipeline. You must evaluate the ENTIRE system holistically — not just individual files, but how everything works together.

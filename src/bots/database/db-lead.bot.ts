@@ -24,13 +24,13 @@ export class DBLeadBot extends BaseBot<CodeOutput> {
     return {
       role: BotRole.DATABASE,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Product Spec:
-${JSON.stringify(productSpec, null, 2)}
+${JSON.stringify(productSpec)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}`,
+${JSON.stringify(techStack)}`,
       task: `You are the Database Lead — a senior DBA and data architect. Design and write the COMPLETE database layer for this project with the rigor of someone designing a schema that will hold millions of records.
 
 Generate the following files:

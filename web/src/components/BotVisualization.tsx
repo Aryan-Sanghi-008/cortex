@@ -23,7 +23,9 @@ const BOTS: BotNode[] = [
   { id: "Frontend-Devs", name: "FE Devs", icon: "⚛️", team: "frontend", color: "cyan" },
   { id: "Backend-Devs", name: "BE Devs", icon: "🖥️", team: "backend", color: "green" },
   { id: "Database-Lead", name: "DB Lead", icon: "🗃️", team: "data", color: "purple" },
+  { id: "Data-Dev", name: "Data Dev", icon: "💾", team: "data", color: "purple" },
   { id: "QA-Lead", name: "QA Lead", icon: "🧪", team: "qa", color: "orange" },
+  { id: "QA-Devs", name: "QA Devs", icon: "🐞", team: "qa", color: "orange" },
   { id: "DevOps", name: "DevOps", icon: "🚀", team: "infra", color: "red" },
   { id: "Principal-Engineer", name: "CTO", icon: "👑", team: "leadership", color: "yellow" },
 ];

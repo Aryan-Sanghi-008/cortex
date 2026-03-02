@@ -23,10 +23,10 @@ export class DevOpsBot extends BaseBot<CodeOutput> {
     return {
       role: BotRole.DEVOPS,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}`,
+${JSON.stringify(techStack)}`,
       task: `You are the DevOps / SRE Engineer. Generate ALL infrastructure, containerization, CI/CD, and deployment configuration files for a production-ready application.
 
 Generate these files — each must be COMPLETE and PRODUCTION-READY:

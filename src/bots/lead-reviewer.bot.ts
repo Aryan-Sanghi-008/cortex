@@ -38,10 +38,10 @@ export class LeadReviewerBot extends BaseBot<PRReview> {
     return {
       role: this.role,
       context: `Lead Architecture Assignment:
-${JSON.stringify(leadAssignment, null, 2)}
+${JSON.stringify(leadAssignment)}
 
 Generated Code to Review:
-${JSON.stringify(code, null, 2)}`,
+${JSON.stringify(code)}`,
       task: `You are the ${this.teamName} Lead conducting a thorough code review of your team's submissions. Review this code as if you were a Tech Lead at Stripe who would be accountable if broken code ships to production.
 
 REVIEW CHECKLIST — evaluate EVERY item:
@@ -106,10 +106,10 @@ SCORING GUIDE:
 - 3-4: Below standard — multiple issues that would cause production problems
 - 1-2: Unacceptable — major missing pieces, broken functionality, or security issues
 
-Review EVERY file. Provide specific comments with file names. Set approved = true ONLY if overallQuality >= 7.`,
+Review the code as a whole. Do NOT include every single file in the fileReviews array. ONLY include files in the fileReviews array that actually have issues or need changes. If a file is perfect, leave it out of the array to save space. Set approved = true ONLY if overallQuality >= 7.`,
       schemaDescription: PR_REVIEW_SCHEMA_DESCRIPTION,
       constraints: [
-        "Review EVERY generated file individually — don't skip any files",
+        "ONLY include files in the fileReviews array if they have actual problems or suggestions. Skip perfect files.",
         "Check that ALL files from the module assignment are present in the output",
         "Flag ANY placeholder or stub code as a blocking issue — this is a hard reject",
         "Flag ANY usage of 'any' type as a blocking issue for type safety",

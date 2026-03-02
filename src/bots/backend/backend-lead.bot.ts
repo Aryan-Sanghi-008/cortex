@@ -24,13 +24,13 @@ export class BackendLeadBot extends BaseBot<LeadAssignment> {
     return {
       role: BotRole.BACKEND_LEAD,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Product Spec:
-${JSON.stringify(productSpec, null, 2)}
+${JSON.stringify(productSpec)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}`,
+${JSON.stringify(techStack)}`,
       task: `You are the Backend Lead — the most senior backend engineer on this project. Design the complete backend architecture and assign development work to your team like a Staff engineer planning a production-critical service.
 
 Your deliverables:

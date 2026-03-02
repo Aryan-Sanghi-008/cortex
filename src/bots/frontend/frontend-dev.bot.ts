@@ -34,28 +34,28 @@ export class FrontendDevBot extends BaseBot<CodeOutput> {
       : "";
 
     const contractBlock = apiContract
-      ? `\n\nBACKEND API CONTRACT — Use these EXACT endpoints in your API calls:\n${JSON.stringify(apiContract, null, 2)}`
+      ? `\n\nBACKEND API CONTRACT — Use these EXACT endpoints in your API calls:\n${JSON.stringify(apiContract)}`
       : "";
 
     return {
       role: BotRole.FRONTEND_DEV,
       context: `Technology Stack:
-${JSON.stringify(techStack, null, 2)}
+${JSON.stringify(techStack)}
 
 Lead Architecture Decisions:
-${JSON.stringify(leadAssignment?.architectureDecisions, null, 2)}
+${JSON.stringify(leadAssignment?.architectureDecisions)}
 
 Shared Patterns:
-${JSON.stringify(leadAssignment?.sharedPatterns, null, 2)}
+${JSON.stringify(leadAssignment?.sharedPatterns)}
 
 Technical Guidelines:
-${JSON.stringify(leadAssignment?.techGuidelines, null, 2)}
+${JSON.stringify(leadAssignment?.techGuidelines)}
 
 Your Module Assignment:
-${JSON.stringify(module, null, 2)}
+${JSON.stringify(module)}
 
 Project Documentation:
-${JSON.stringify(doc, null, 2)}${contractBlock}${feedbackBlock}`,
+${JSON.stringify(doc)}${contractBlock}${feedbackBlock}`,
       task: `You are a Senior Frontend Developer. Write COMPLETE, PRODUCTION-READY code for your assigned module: "${module?.name ?? "unknown"}"
 
 Files you MUST create: ${JSON.stringify(module?.assignedFiles ?? [])}

@@ -28,19 +28,19 @@ export class QADevBot extends BaseBot<CodeOutput> {
     return {
       role: BotRole.QA_DEV,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}
+${JSON.stringify(techStack)}
 
 QA Lead Test Architecture & Module Assignments:
-${JSON.stringify(qaLeadOutput, null, 2)}
+${JSON.stringify(qaLeadOutput)}
 
 Frontend Code Generated:
-${JSON.stringify(frontendCode, null, 2)}
+${JSON.stringify(frontendCode)}
 
 Backend Code Generated:
-${JSON.stringify(backendCode, null, 2)}`,
+${JSON.stringify(backendCode)}`,
       task: `You are a Senior QA Developer. Write COMPREHENSIVE, RUNNABLE test files based on the QA Lead's architecture and the actual generated application code.
 
 Your tests must be thorough enough that if they all pass, you would confidently deploy to production.

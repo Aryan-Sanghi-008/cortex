@@ -157,11 +157,11 @@ export class TeamRunner {
         // Store feedback for each dev bot
         const feedbackStr = lastReview.requiredChanges.join("\n") +
           "\n\nFile-specific comments:\n" +
-          lastReview.fileReviews
+          (lastReview.fileReviews || [])
             .filter((f) => f.status === "needs-changes")
             .map(
               (f) =>
-                `${f.path}: ${f.comments.map((c) => c.comment).join("; ")}`
+                `${f.path}: ${f.comments.join("; ")}`
             )
             .join("\n");
 

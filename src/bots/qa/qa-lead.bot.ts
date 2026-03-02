@@ -25,16 +25,16 @@ export class QALeadBot extends BaseBot<LeadAssignment> {
     return {
       role: BotRole.QA,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}
+${JSON.stringify(techStack)}
 
 Frontend Code Generated:
-${JSON.stringify(frontendCode, null, 2)}
+${JSON.stringify(frontendCode)}
 
 Backend Code Generated:
-${JSON.stringify(backendCode, null, 2)}`,
+${JSON.stringify(backendCode)}`,
       task: `You are the QA Lead — a senior QA architect responsible for designing a comprehensive test strategy that ensures this application is production-ready. Think like a QA Lead at Stripe who would be fired if a bug reaches production.
 
 Design the complete testing architecture:

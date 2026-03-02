@@ -24,13 +24,13 @@ export class FrontendLeadBot extends BaseBot<LeadAssignment> {
     return {
       role: BotRole.FRONTEND_LEAD,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Product Spec:
-${JSON.stringify(productSpec, null, 2)}
+${JSON.stringify(productSpec)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}`,
+${JSON.stringify(techStack)}`,
       task: `You are the Frontend Lead — the most senior frontend engineer on this project. Design the complete frontend architecture and assign development work to your team with the precision of a Staff engineer leading a launch.
 
 Your deliverables:

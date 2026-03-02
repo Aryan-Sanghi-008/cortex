@@ -17,7 +17,9 @@ const BOT_MAP: Record<string, BotInfo> = {
   "Backend-Lead": { name: "Backend Lead", icon: "⚙️", team: "Backend" },
   "Backend-Devs": { name: "Backend Devs", icon: "🖥️", team: "Backend" },
   "Database-Lead": { name: "Database Lead", icon: "🗃️", team: "Database" },
+  "Data-Dev": { name: "Data Dev", icon: "💾", team: "Database" },
   "QA-Lead": { name: "QA Lead", icon: "🧪", team: "Quality" },
+  "QA-Devs": { name: "QA Devs", icon: "🐞", team: "Quality" },
   DevOps: { name: "DevOps", icon: "🚀", team: "Infrastructure" },
   "Principal-Engineer": { name: "Principal Engineer", icon: "👑", team: "Leadership" },
 };

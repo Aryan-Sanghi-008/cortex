@@ -24,7 +24,7 @@ export class TechStackBot extends BaseBot<TechStackOutput> {
       context: `Product Idea: ${memory.productIdea}
 
 Product Specification:
-${JSON.stringify(productSpec, null, 2)}`,
+${JSON.stringify(productSpec)}`,
       task: `Based on the product specification, select the OPTIMAL technology stack for this project. Think like a CTO making a critical infrastructure decision — every choice has long-term consequences.
 
 Evaluate each technology layer systematically:

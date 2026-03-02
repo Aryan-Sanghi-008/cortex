@@ -9,6 +9,10 @@ import {
 } from "../types.js";
 import { logger } from "../../utils/logger.js";
 import type { TokenTracker } from "../../utils/token-tracker.js";
+import { GlobalRateLimiter } from "../../utils/rate-limiter.js";
+
+// Global singleton to enforce 15 RPM across all Gemini instances
+const geminiLimiter = new GlobalRateLimiter(15);
 
 export class GeminiProvider implements LLMProvider {
   readonly name = LLMProviderName.GEMINI;
@@ -47,6 +51,8 @@ export class GeminiProvider implements LLMProvider {
 
     const fullPrompt = `${systemMsg}\n\nYou MUST respond with valid JSON only. No markdown, no code fences, no explanation.\n\n${userMsg}`;
 
+    // Rate limit to prevent 429s (15 RPM max)
+    await geminiLimiter.acquire();
     const result = await model.generateContent(fullPrompt);
     const raw = result.response.text();
     logger.bot("Gemini", `Received ${raw.length} chars`);
@@ -93,6 +99,8 @@ export class GeminiProvider implements LLMProvider {
     const userMsg =
       request.messages.find((m) => m.role === "user")?.content ?? "";
 
+    // Rate limit to prevent 429s
+    await geminiLimiter.acquire();
     const result = await model.generateContent(`${systemMsg}\n\n${userMsg}`);
 
     // Track token usage from API response

@@ -15,7 +15,7 @@ const MAX_CONTEXT_CHARS = 2000; // ~500 tokens
  * This is a heuristic compressor — no LLM call needed.
  */
 export function compressContext(data: unknown, maxChars = MAX_CONTEXT_CHARS): string {
-  const json = JSON.stringify(data, null, 2);
+  const json = JSON.stringify(data);
 
   // If already small, return as-is
   if (json.length <= maxChars) return json;
@@ -27,7 +27,7 @@ export function compressContext(data: unknown, maxChars = MAX_CONTEXT_CHARS): st
   // Deep compress: extract key fields only
   if (typeof data === "object" && data !== null) {
     const summary = extractKeySummary(data as Record<string, unknown>);
-    const summaryJson = JSON.stringify(summary, null, 2);
+    const summaryJson = JSON.stringify(summary);
     if (summaryJson.length <= maxChars) return summaryJson;
 
     // Last resort: truncate with marker
@@ -97,5 +97,5 @@ export function compressCodeOutput(codeOutput: {
     dependencies: codeOutput.dependencies,
     devDependencies: codeOutput.devDependencies,
   };
-  return JSON.stringify(summary, null, 2);
+  return JSON.stringify(summary);
 }

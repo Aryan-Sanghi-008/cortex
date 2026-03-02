@@ -25,10 +25,10 @@ export class ResourcePlannerBot extends BaseBot<ResourcePlanOutput> {
       context: `Product Idea: ${memory.productIdea}
 
 Product Specification:
-${JSON.stringify(productSpec, null, 2)}
+${JSON.stringify(productSpec)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}`,
+${JSON.stringify(techStack)}`,
       task: `Determine the optimal engineering team composition for this project. Think like a seasoned Engineering Manager planning a sprint — you need enough parallelism to move fast, but not so many engineers that coordination overhead kills velocity.
 
 Analyze the project systematically:

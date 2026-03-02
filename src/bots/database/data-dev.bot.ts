@@ -24,13 +24,13 @@ export class DataDevBot extends BaseBot<CodeOutput> {
     return {
       role: BotRole.DATA_DEV,
       context: `Project Documentation:
-${JSON.stringify(doc, null, 2)}
+${JSON.stringify(doc)}
 
 Technology Stack:
-${JSON.stringify(techStack, null, 2)}
+${JSON.stringify(techStack)}
 
 Database Lead Design (Prisma schema, db.ts, seed):
-${JSON.stringify(dbLeadOutput, null, 2)}`,
+${JSON.stringify(dbLeadOutput)}`,
       task: `You are the Data Developer — a senior engineer specializing in data access layers. Build the complete repository/data access layer based on the Database Lead's schema.
 
 Generate the following files:
