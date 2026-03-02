@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -23,14 +24,12 @@ export class DBLeadBot extends BaseBot<CodeOutput> {
 
     return {
       role: BotRole.DATABASE,
-      context: `Project Documentation:
-${JSON.stringify(doc)}
+      context: `${formatTechStack(techStack)}
 
-Product Spec:
-${JSON.stringify(productSpec)}
+${formatProductSpec(productSpec)}
 
-Technology Stack:
-${JSON.stringify(techStack)}`,
+Project Documentation:
+${JSON.stringify(doc)}`,
       task: `You are the Database Lead — a senior DBA and data architect. Design and write the COMPLETE database layer for this project with the rigor of someone designing a schema that will hold millions of records.
 
 Generate the following files:

@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -27,14 +28,12 @@ export class QADevBot extends BaseBot<CodeOutput> {
 
     return {
       role: BotRole.QA_DEV,
-      context: `Project Documentation:
-${JSON.stringify(doc)}
-
-Technology Stack:
-${JSON.stringify(techStack)}
+      context: `${formatTechStack(techStack)}
 
 QA Lead Test Architecture & Module Assignments:
-${JSON.stringify(qaLeadOutput)}
+${formatLeadAssignment(qaLeadOutput)}
+
+${formatProductSpec(doc)}
 
 Frontend Code Generated:
 ${JSON.stringify(frontendCode)}

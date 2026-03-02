@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec, formatLeadAssignment, formatApiContract } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -34,28 +35,19 @@ export class FrontendDevBot extends BaseBot<CodeOutput> {
       : "";
 
     const contractBlock = apiContract
-      ? `\n\nBACKEND API CONTRACT — Use these EXACT endpoints in your API calls:\n${JSON.stringify(apiContract)}`
+      ? `\n\nBACKEND API CONTRACT — Use these EXACT endpoints in your API calls:\n${formatApiContract(apiContract as any[])}`
       : "";
 
     return {
       role: BotRole.FRONTEND_DEV,
-      context: `Technology Stack:
-${JSON.stringify(techStack)}
+      context: `${formatTechStack(techStack)}
 
-Lead Architecture Decisions:
-${JSON.stringify(leadAssignment?.architectureDecisions)}
-
-Shared Patterns:
-${JSON.stringify(leadAssignment?.sharedPatterns)}
-
-Technical Guidelines:
-${JSON.stringify(leadAssignment?.techGuidelines)}
+${formatLeadAssignment(leadAssignment)}
 
 Your Module Assignment:
 ${JSON.stringify(module)}
 
-Project Documentation:
-${JSON.stringify(doc)}${contractBlock}${feedbackBlock}`,
+${formatProductSpec(doc)}${contractBlock}${feedbackBlock}`,
       task: `You are a Senior Frontend Developer. Write COMPLETE, PRODUCTION-READY code for your assigned module: "${module?.name ?? "unknown"}"
 
 Files you MUST create: ${JSON.stringify(module?.assignedFiles ?? [])}

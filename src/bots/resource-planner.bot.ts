@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
 import {
   ResourcePlanOutput,
   ResourcePlanOutputSchema,
@@ -24,11 +25,9 @@ export class ResourcePlannerBot extends BaseBot<ResourcePlanOutput> {
       role: BotRole.RESOURCE_PLANNER,
       context: `Product Idea: ${memory.productIdea}
 
-Product Specification:
-${JSON.stringify(productSpec)}
+${formatProductSpec(productSpec)}
 
-Technology Stack:
-${JSON.stringify(techStack)}`,
+${formatTechStack(techStack)}`,
       task: `Determine the optimal engineering team composition for this project. Think like a seasoned Engineering Manager planning a sprint — you need enough parallelism to move fast, but not so many engineers that coordination overhead kills velocity.
 
 Analyze the project systematically:

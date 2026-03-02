@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { formatProductSpec } from "../utils/context-compressor.js";
 import {
   TechStackOutput,
   TechStackOutputSchema,
@@ -23,8 +24,7 @@ export class TechStackBot extends BaseBot<TechStackOutput> {
       role: BotRole.TECH_STACK,
       context: `Product Idea: ${memory.productIdea}
 
-Product Specification:
-${JSON.stringify(productSpec)}`,
+${formatProductSpec(productSpec)}`,
       task: `Based on the product specification, select the OPTIMAL technology stack for this project. Think like a CTO making a critical infrastructure decision — every choice has long-term consequences.
 
 Evaluate each technology layer systematically:

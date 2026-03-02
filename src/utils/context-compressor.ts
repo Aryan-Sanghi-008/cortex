@@ -99,3 +99,70 @@ export function compressCodeOutput(codeOutput: {
   };
   return JSON.stringify(summary);
 }
+
+/**
+ * Dense Markdown formatters to compress context payloads and save input tokens.
+ * JSON has massive token overhead ({}, [], ", etc). These formatters convert that
+ * exact same logic into clean bullets.
+ */
+
+// Formats the ProductOwnerOutput (Specs & User Stories)
+export function formatProductSpec(data: any): string {
+  if (!data) return "";
+  let out = "## Product Specification\n";
+  if (data.epics?.length) {
+    out += "\n### Epics\n" + data.epics.map((e: any) => `- **${e.name}**: ${e.description}`).join("\n");
+  }
+  if (data.userStories?.length) {
+    out += "\n\n### User Stories\n" + data.userStories.map((us: any) => 
+      `- [${us.id}] (${us.priority}) As a ${us.asA}, I want ${us.iWant}, so that ${us.soThat}\n  - AC: ${us.acceptanceCriteria?.join("; ")}`
+    ).join("\n");
+  }
+  if (data.constraints?.length) out += "\n\n### Constraints\n" + data.constraints.map((c: string) => `- ${c}`).join("\n");
+  if (data.assumptions?.length) out += "\n\n### Assumptions\n" + data.assumptions.map((a: string) => `- ${a}`).join("\n");
+  return out;
+}
+
+// Formats the TechStackOutput
+export function formatTechStack(data: any): string {
+  if (!data) return "";
+  let out = "## Technology Stack\n";
+  if (data.frontend?.length) out += `- Frontend: ${data.frontend.join(", ")}\n`;
+  if (data.backend?.length) out += `- Backend: ${data.backend.join(", ")}\n`;
+  if (data.database) out += `- Database: ${data.database}\n`;
+  if (data.infra?.length) out += `- Infrastructure: ${data.infra.join(", ")}\n`;
+  if (data.authStrategy) out += `- Auth Strategy: ${data.authStrategy}\n`;
+  if (data.scalingStrategy) out += `- Scaling Strategy: ${data.scalingStrategy}\n`;
+  return out;
+}
+
+// Formats LeadAssignment module structure
+export function formatLeadAssignment(data: any): string {
+  if (!data) return "";
+  let out = "## Architecture Decisions\n";
+  if (data.architectureDecisions?.length) out += data.architectureDecisions.map((d: string, i: number) => `${i+1}. ${d}`).join("\n");
+  
+  out += "\n\n## Shared Patterns\n";
+  if (data.sharedPatterns) {
+    out += `- Naming: ${data.sharedPatterns.namingConvention}\n`;
+    out += `- Style: ${data.sharedPatterns.codeStyle}\n`;
+    out += `- Errors: ${data.sharedPatterns.errorHandling}\n`;
+  }
+
+  out += "\n\n## Technical Guidelines\n";
+  if (data.techGuidelines?.length) out += data.techGuidelines.map((g: string) => `- ${g}`).join("\n");
+
+  if (data.apiContract?.length) {
+    out += "\n\n## API Contract\n";
+    out += formatApiContract(data.apiContract);
+  }
+  return out;
+}
+
+// Formats the standalone API contract array
+export function formatApiContract(contract: any[]): string {
+  if (!contract || !contract.length) return "";
+  return contract.map((api: any) => 
+    `- ${api.method} ${api.path} (Auth: ${api.auth})\n  - Req: ${api.requestBody || "none"}\n  - Res: ${api.responseShape}\n  - Desc: ${api.description}`
+  ).join("\n");
+}

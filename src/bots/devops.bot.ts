@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -22,11 +23,9 @@ export class DevOpsBot extends BaseBot<CodeOutput> {
 
     return {
       role: BotRole.DEVOPS,
-      context: `Project Documentation:
-${JSON.stringify(doc)}
+      context: `${formatTechStack(techStack)}
 
-Technology Stack:
-${JSON.stringify(techStack)}`,
+${formatProductSpec(doc)}`,
       task: `You are the DevOps / SRE Engineer. Generate ALL infrastructure, containerization, CI/CD, and deployment configuration files for a production-ready application.
 
 Generate these files — each must be COMPLETE and PRODUCTION-READY:

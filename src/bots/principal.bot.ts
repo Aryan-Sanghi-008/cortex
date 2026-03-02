@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
 import {
   PRReview,
   PRReviewSchema,
@@ -31,11 +32,9 @@ export class PrincipalBot extends BaseBot<PRReview> {
 
     return {
       role: BotRole.PRINCIPAL,
-      context: `Project Documentation:
-${JSON.stringify(doc)}
+      context: `${formatTechStack(techStack)}
 
-Technology Stack:
-${JSON.stringify(techStack)}
+${formatProductSpec(doc)}
 
 Frontend Code:
 ${JSON.stringify(frontendCode)}

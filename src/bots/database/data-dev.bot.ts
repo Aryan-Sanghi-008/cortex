@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { formatTechStack } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -23,11 +24,10 @@ export class DataDevBot extends BaseBot<CodeOutput> {
 
     return {
       role: BotRole.DATA_DEV,
-      context: `Project Documentation:
-${JSON.stringify(doc)}
+      context: `${formatTechStack(techStack)}
 
-Technology Stack:
-${JSON.stringify(techStack)}
+Project Documentation:
+${JSON.stringify(doc)}
 
 Database Lead Design (Prisma schema, db.ts, seed):
 ${JSON.stringify(dbLeadOutput)}`,

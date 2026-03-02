@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -32,23 +33,14 @@ export class BackendDevBot extends BaseBot<CodeOutput> {
 
     return {
       role: BotRole.BACKEND_DEV,
-      context: `Technology Stack:
-${JSON.stringify(techStack)}
+      context: `${formatTechStack(techStack)}
 
-Lead Architecture Decisions:
-${JSON.stringify(leadAssignment?.architectureDecisions)}
-
-Shared Patterns:
-${JSON.stringify(leadAssignment?.sharedPatterns)}
-
-Technical Guidelines:
-${JSON.stringify(leadAssignment?.techGuidelines)}
+${formatLeadAssignment(leadAssignment)}
 
 Your Module Assignment:
 ${JSON.stringify(module)}
 
-Project Documentation:
-${JSON.stringify(doc)}${feedbackBlock}`,
+${formatProductSpec(doc)}${feedbackBlock}`,
       task: `You are a Senior Backend Developer. Write COMPLETE, PRODUCTION-READY code for your assigned module: "${module?.name ?? "unknown"}"
 
 Files you MUST create: ${JSON.stringify(module?.assignedFiles ?? [])}
