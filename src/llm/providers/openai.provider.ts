@@ -8,6 +8,7 @@ import {
 } from "../types.js";
 import { logger } from "../../utils/logger.js";
 import type { TokenTracker } from "../../utils/token-tracker.js";
+import { parseJsonSafely } from "../../utils/json-parser.js";
 
 export class OpenAIProvider implements LLMProvider {
   readonly name = LLMProviderName.OPENAI;
@@ -25,10 +26,9 @@ export class OpenAIProvider implements LLMProvider {
     this.botName = config.botName ?? "OpenAI";
   }
 
-  async generateStructuredOutput<T>(
-    request: LLMGenerationRequest,
-    schema: z.ZodType<T, any, any>
-  ): Promise<T> {
+  async generateStructuredOutput(
+    request: LLMGenerationRequest
+  ): Promise<unknown> {
     const messages = request.messages.map((m) => ({
       role: m.role as "system" | "user" | "assistant",
       content: m.content,
@@ -62,8 +62,7 @@ export class OpenAIProvider implements LLMProvider {
       );
     }
 
-    const parsed = JSON.parse(raw);
-    return schema.parse(parsed);
+    return parseJsonSafely(raw, this.botName);
   }
 
   async generateText(request: LLMGenerationRequest): Promise<string> {

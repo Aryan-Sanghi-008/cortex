@@ -37,13 +37,14 @@ export interface LLMProvider {
   readonly name: LLMProviderName;
 
   /**
-   * Generate a structured JSON output that conforms to the given Zod schema.
-   * The provider must instruct the LLM to return valid JSON and parse it.
+   * Generate a structured JSON output.
+   * The provider must instruct the LLM to return valid JSON and parse it cleanly.
+   * Validation is intentionally handled by the caller, NOT the provider,
+   * so that format errors can be caught and fed back into the retry prompt.
    */
-  generateStructuredOutput<T>(
-    request: LLMGenerationRequest,
-    schema: z.ZodType<T, any, any>
-  ): Promise<T>;
+  generateStructuredOutput(
+    request: LLMGenerationRequest
+  ): Promise<unknown>;
 
   /**
    * Generate a raw text response (used for non-structured tasks).

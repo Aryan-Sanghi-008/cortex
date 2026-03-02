@@ -8,38 +8,7 @@ import {
 } from "../types.js";
 import { logger } from "../../utils/logger.js";
 import type { TokenTracker } from "../../utils/token-tracker.js";
-
-/**
- * Extract JSON from a response that may contain reasoning/think tags.
- * R1/reasoning models wrap output like: <think>...</think>\n{...}
- */
-function extractJSON(raw: string): string {
-  // Strip <think>...</think> blocks (R1 reasoning models)
-  let cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-
-  // If it starts with ``` markdown fences, strip them
-  cleaned = cleaned.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
-
-  // Try to find the first { or [ and last } or ]
-  const firstBrace = cleaned.indexOf("{");
-  const firstBracket = cleaned.indexOf("[");
-  let start = -1;
-
-  if (firstBrace === -1 && firstBracket === -1) {
-    return cleaned; // Return as-is, let JSON.parse handle the error
-  }
-
-  if (firstBrace === -1) start = firstBracket;
-  else if (firstBracket === -1) start = firstBrace;
-  else start = Math.min(firstBrace, firstBracket);
-
-  const isArray = cleaned[start] === "[";
-  const lastClose = isArray ? cleaned.lastIndexOf("]") : cleaned.lastIndexOf("}");
-
-  if (lastClose === -1) return cleaned;
-
-  return cleaned.slice(start, lastClose + 1);
-}
+import { parseJsonSafely } from "../../utils/json-parser.js";
 
 /**
  * DeepSeek uses an OpenAI-compatible API, so we reuse the OpenAI SDK
@@ -67,10 +36,9 @@ export class DeepSeekProvider implements LLMProvider {
     this.botName = config.botName ?? "DeepSeek";
   }
 
-  async generateStructuredOutput<T>(
-    request: LLMGenerationRequest,
-    schema: z.ZodType<T, any, any>
-  ): Promise<T> {
+  async generateStructuredOutput(
+    request: LLMGenerationRequest
+  ): Promise<unknown> {
     const messages = request.messages.map((m) => ({
       role: m.role as "system" | "user" | "assistant",
       content: m.content,
@@ -106,12 +74,8 @@ export class DeepSeekProvider implements LLMProvider {
       );
     }
 
-    // Extract JSON from potentially reasoning-wrapped output
-    const jsonStr = extractJSON(raw);
-    logger.bot("DeepSeek", `Extracted JSON: ${jsonStr.length} chars`);
-
-    const parsed = JSON.parse(jsonStr);
-    return schema.parse(parsed);
+    // Use the central robust parser (handles <think> blocks and Markdown fences)
+    return parseJsonSafely(raw, this.botName);
   }
 
   async generateText(request: LLMGenerationRequest): Promise<string> {

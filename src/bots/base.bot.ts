@@ -78,15 +78,12 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
           }
         }
 
-        const result = await this.llm.generateStructuredOutput(
-          {
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: user },
-            ],
-          },
-          this.schema
-        );
+        const result = await this.llm.generateStructuredOutput({
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: user },
+          ],
+        });
 
         // Validate with Zod (belt and suspenders — some providers may skip schema)
         const validation = validateOutput(result, this.schema);

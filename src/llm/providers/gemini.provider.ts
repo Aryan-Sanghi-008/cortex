@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { jsonrepair } from "jsonrepair";
 import { z } from "zod";
 import {
   LLMConfig,
@@ -10,6 +9,7 @@ import {
 import { logger } from "../../utils/logger.js";
 import type { TokenTracker } from "../../utils/token-tracker.js";
 import { GlobalRateLimiter } from "../../utils/rate-limiter.js";
+import { parseJsonSafely } from "../../utils/json-parser.js";
 
 // Global singleton to enforce 15 RPM across all Gemini instances
 const geminiLimiter = new GlobalRateLimiter(15);
@@ -30,10 +30,9 @@ export class GeminiProvider implements LLMProvider {
     this.botName = config.botName ?? "Gemini";
   }
 
-  async generateStructuredOutput<T>(
-    request: LLMGenerationRequest,
-    schema: z.ZodType<T, any, any>
-  ): Promise<T> {
+  async generateStructuredOutput(
+    request: LLMGenerationRequest
+  ): Promise<unknown> {
     const model = this.client.getGenerativeModel({
       model: this.model,
       generationConfig: {
@@ -68,21 +67,8 @@ export class GeminiProvider implements LLMProvider {
       );
     }
 
-    // Try direct parse first, then attempt robust repair if truncated
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      logger.warn(`Gemini JSON truncated (${raw.length} chars), using jsonrepair...`);
-      try {
-        parsed = JSON.parse(jsonrepair(raw));
-      } catch (repairErr) {
-        logger.error(`Failed to repair JSON: ${repairErr}`);
-        throw repairErr;
-      }
-    }
-
-    return schema.parse(parsed);
+    // Parse safely (handles Markdown fences, truncations, jsonrepair)
+    return parseJsonSafely(raw, this.botName);
   }
 
   async generateText(request: LLMGenerationRequest): Promise<string> {
