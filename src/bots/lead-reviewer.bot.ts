@@ -16,6 +16,7 @@ import type { CodeOutput } from "../validation/index.js";
  */
 export class LeadReviewerBot extends BaseBot<PRReview> {
   readonly role: BotRole;
+  protected override maxTokens = 32768;
   private teamName: string;
   private codeKey: string;
 

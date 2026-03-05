@@ -87,17 +87,17 @@ export function compressCodeOutput(codeOutput: {
   dependencies: string[];
   devDependencies: string[];
 }): string {
-  const summary = {
-    fileCount: codeOutput.files.length,
-    files: codeOutput.files.map((f) => ({
-      path: f.path,
-      language: f.language,
-      lines: f.content.split("\n").length,
-    })),
-    dependencies: codeOutput.dependencies,
-    devDependencies: codeOutput.devDependencies,
-  };
-  return JSON.stringify(summary);
+  let out = `File Count: ${codeOutput.files.length}\n\n### Files\n`;
+  for (const f of codeOutput.files) {
+    out += `- ${f.path} (${f.language}, ${f.content.split("\n").length} lines)\n`;
+  }
+  if (codeOutput.dependencies.length) {
+    out += `\n### Dependencies\n${codeOutput.dependencies.join(", ")}\n`;
+  }
+  if (codeOutput.devDependencies.length) {
+    out += `\n### Dev Dependencies\n${codeOutput.devDependencies.join(", ")}\n`;
+  }
+  return out;
 }
 
 /**

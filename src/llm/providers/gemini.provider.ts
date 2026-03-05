@@ -11,8 +11,9 @@ import type { TokenTracker } from "../../utils/token-tracker.js";
 import { GlobalRateLimiter } from "../../utils/rate-limiter.js";
 import { parseJsonSafely } from "../../utils/json-parser.js";
 
-// Global singleton to enforce 15 RPM across all Gemini instances
-const geminiLimiter = new GlobalRateLimiter(15);
+// Read RPM from env: free tier = 15, paid tier = 1000+
+const geminiRPM = parseInt(process.env.GEMINI_RPM ?? "15", 10);
+const geminiLimiter = new GlobalRateLimiter(geminiRPM);
 
 export class GeminiProvider implements LLMProvider {
   readonly name = LLMProviderName.GEMINI;
@@ -50,9 +51,16 @@ export class GeminiProvider implements LLMProvider {
 
     const fullPrompt = `${systemMsg}\n\nYou MUST respond with valid JSON only. No markdown, no code fences, no explanation.\n\n${userMsg}`;
 
-    // Rate limit to prevent 429s (15 RPM max)
+    // Rate limit to prevent 429s
     await geminiLimiter.acquire();
-    const result = await model.generateContent(fullPrompt);
+    let result;
+    try {
+      result = await model.generateContent(fullPrompt);
+    } catch (err: any) {
+      const status = err?.status ?? err?.code ?? err?.httpStatusCode ?? "";
+      const msg = err?.message ?? String(err);
+      throw new Error(`[${status}] Gemini API error: ${msg}`);
+    }
     const raw = result.response.text();
     logger.bot("Gemini", `Received ${raw.length} chars`);
 
@@ -87,7 +95,14 @@ export class GeminiProvider implements LLMProvider {
 
     // Rate limit to prevent 429s
     await geminiLimiter.acquire();
-    const result = await model.generateContent(`${systemMsg}\n\n${userMsg}`);
+    let result;
+    try {
+      result = await model.generateContent(`${systemMsg}\n\n${userMsg}`);
+    } catch (err: any) {
+      const status = err?.status ?? err?.code ?? err?.httpStatusCode ?? "";
+      const msg = err?.message ?? String(err);
+      throw new Error(`[${status}] Gemini API error: ${msg}`);
+    }
 
     // Track token usage from API response
     if (this.tracker && result.response.usageMetadata) {

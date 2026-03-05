@@ -12,6 +12,7 @@ import {
 
 export class QADevBot extends BaseBot<CodeOutput> {
   readonly role = BotRole.QA_DEV;
+  protected override maxTokens = 65536;
   private moduleIndex: number;
 
   constructor(llm: LLMProvider, moduleIndex: number = 0, maxRetries?: number) {

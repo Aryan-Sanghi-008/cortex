@@ -13,6 +13,7 @@ import type { LeadAssignment } from "../../validation/index.js";
 
 export class FrontendDevBot extends BaseBot<CodeOutput> {
   readonly role = BotRole.FRONTEND_DEV;
+  protected override maxTokens = 65536;
   private moduleIndex: number;
 
   constructor(llm: LLMProvider, moduleIndex: number, maxRetries?: number) {

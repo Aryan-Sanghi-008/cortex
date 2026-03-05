@@ -12,6 +12,7 @@ import {
 
 export class DataDevBot extends BaseBot<CodeOutput> {
   readonly role = BotRole.DATA_DEV;
+  protected override maxTokens = 65536;
 
   constructor(llm: LLMProvider, maxRetries?: number) {
     super(llm, CodeOutputSchema, "Data-Dev", maxRetries);

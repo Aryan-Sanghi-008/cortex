@@ -244,7 +244,7 @@ export class Orchestrator {
           return qaDevBot.execute(memory);
         };
       }),
-      3 // Max 3 concurrent (Gemini free: 15 RPM max)
+      parseInt(process.env.MAX_CONCURRENCY ?? "3", 10) // Configurable: free tier = 3, paid tier = higher
     );
     
     const mergedQaCode: CodeOutput = {

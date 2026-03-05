@@ -68,13 +68,14 @@ export class ShortTermMemory {
 
   /**
    * Build a context string from all stored entries for prompt injection.
+   * @deprecated Bots should use their own buildPromptParts() with formatters instead.
    */
   buildContextString(): string {
     const parts: string[] = [`Product Idea: ${this.memory.productIdea}`];
 
     for (const [key, entry] of this.memory.entries) {
       parts.push(
-        `\n--- ${key} ---\n${JSON.stringify(entry.value, null, 2)}`
+        `\n--- ${key} ---\n${JSON.stringify(entry.value)}`
       );
     }
 

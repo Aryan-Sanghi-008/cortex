@@ -16,6 +16,7 @@ import {
  */
 export class PrincipalBot extends BaseBot<PRReview> {
   readonly role = BotRole.PRINCIPAL;
+  protected override maxTokens = 32768;
 
   constructor(llm: LLMProvider, maxRetries?: number) {
     super(llm, PRReviewSchema, "Principal-Engineer", maxRetries);
