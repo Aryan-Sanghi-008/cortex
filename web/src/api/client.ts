@@ -8,6 +8,7 @@ export interface ProjectRecord {
   output?: any;
   error?: string;
   createdAt: string;
+  previewUrl?: string;
 }
 
 export async function createProject(productIdea: string, images: string[] = []): Promise<{ projectId: string }> {

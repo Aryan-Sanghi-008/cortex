@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface FileItem {
   path: string;
@@ -95,21 +95,70 @@ export const OutputViewer: React.FC<Props> = ({ output }) => {
     ? files.filter((f) => f.path.toLowerCase().includes(searchQuery.toLowerCase()))
     : files;
 
-  const handleDownload = async () => {
-    const filePath = `/output/${output.projectId}/${output.projectName
-      ?.toLowerCase()
-      .replace(/\s+/g, "-")}.zip`;
+  const [paymentChecked, setPaymentChecked] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-    const response = await fetch(filePath);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${output.projectName}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
+  // Check payment status on mount
+  useEffect(() => {
+    if (!output?.projectId) return;
+    fetch(`/api/projects/${output.projectId}/payment-status`)
+      .then((r) => r.json())
+      .then((data) => {
+        setIsPaid(data.paid);
+        setPaymentChecked(true);
+      })
+      .catch(() => setPaymentChecked(true));
+  }, [output?.projectId]);
+
+  const handleDownload = async () => {
+    if (isPaid) {
+      // Already paid — direct download
+      const link = document.createElement("a");
+      link.href = `/api/projects/${output.projectId}/download`;
+      link.download = `${output.projectName ?? "cortex-project"}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      return;
+    }
+
+    // Not paid — initiate Stripe checkout
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch(`/api/projects/${output.projectId}/download-checkout`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (data.alreadyPaid) {
+        setIsPaid(true);
+        setCheckoutLoading(false);
+        // Auto-download now
+        const link = document.createElement("a");
+        link.href = `/api/projects/${output.projectId}/download`;
+        link.download = `${output.projectName ?? "cortex-project"}.zip`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        return;
+      }
+
+      if (data.status === "paid") {
+        // Dev mode (no Stripe key) — auto-approve
+        setIsPaid(true);
+        setCheckoutLoading(false);
+        return;
+      }
+
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        setCheckoutLoading(false);
+      }
+    } catch {
+      setCheckoutLoading(false);
+    }
   };
 
   return (
@@ -123,9 +172,18 @@ export const OutputViewer: React.FC<Props> = ({ output }) => {
           <span className="text-[11px] text-gray-500 font-mono">{files.length} files</span>
           <button
             onClick={handleDownload}
-            className="btn-primary text-sm py-2 px-4 flex items-center gap-2"
+            disabled={checkoutLoading}
+            className={`text-sm py-2 px-4 flex items-center gap-2 ${
+              isPaid ? "btn-primary" : "btn-secondary border-neon-orange/30 text-neon-orange hover:bg-neon-orange/10"
+            }`}
           >
-            <span>⬇</span> Download ZIP
+            {checkoutLoading ? (
+              <><span className="animate-spin">⏳</span> Processing...</>
+            ) : isPaid ? (
+              <><span>⬇</span> Download ZIP</>
+            ) : (
+              <><span>🔒</span> Buy & Download — ₹100</>
+            )}
           </button>
         </div>
       </div>

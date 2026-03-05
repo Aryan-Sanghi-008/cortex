@@ -24,6 +24,7 @@ interface ProjectRecord {
   previewUrl?: string;
   deployUrl?: string;
   deployStatus?: string;
+  paidAt?: string;
 }
 
 const projects = new Map<string, ProjectRecord>();
@@ -70,6 +71,15 @@ router.post("/", async (req: Request, res: Response) => {
         );
         record.status = "completed";
         record.output = output;
+
+        // Auto-start preview server so the UI can open it in a new tab
+        try {
+          const { url } = await startPreview(output.projectId, output.projectDir);
+          record.previewUrl = url;
+          logger.info(`[Auto-Preview] Started at ${url}`);
+        } catch (previewErr) {
+          logger.warn(`[Auto-Preview] Failed: ${previewErr}`);
+        }
 
         // Store for future learning
         await projectStore.addProject({
@@ -239,6 +249,80 @@ router.get("/:id/deploy-after-pay", async (req: Request, res: Response) => {
   } catch {
     res.redirect("/?error=deploy_failed");
   }
+});
+
+// ─── DOWNLOAD: PAYMENT STATUS CHECK ─────────────────────────
+router.get("/:id/payment-status", (req: Request, res: Response) => {
+  const project = projects.get(req.params.id as string);
+  if (!project) {
+    res.status(404).json({ error: "Project not found" });
+    return;
+  }
+  res.json({ paid: !!project.paidAt, paidAt: project.paidAt ?? null });
+});
+
+// ─── DOWNLOAD: CREATE STRIPE CHECKOUT (₹100 INR) ───────────
+router.post("/:id/download-checkout", async (req: Request, res: Response) => {
+  const project = projects.get(req.params.id as string);
+  if (!project?.output) {
+    res.status(404).json({ error: "Project not completed" });
+    return;
+  }
+
+  // Already paid? Allow free re-download
+  if (project.paidAt) {
+    res.json({ alreadyPaid: true });
+    return;
+  }
+
+  const gateway = new StripeGateway();
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+  const result = await gateway.createDownloadCheckout(
+    project.id,
+    `${baseUrl}/api/projects/${project.id}/download-success`,
+    `${baseUrl}/?cancelled=true`
+  );
+
+  res.json(result);
+});
+
+// ─── DOWNLOAD: STRIPE SUCCESS CALLBACK ──────────────────────
+router.get("/:id/download-success", (req: Request, res: Response) => {
+  const project = projects.get(req.params.id as string);
+  if (!project) {
+    res.redirect("/?error=project_not_found");
+    return;
+  }
+
+  // Mark as paid
+  project.paidAt = new Date().toISOString();
+  logger.info(`[Payment] Project ${project.id} marked as paid`);
+
+  // Redirect back to UI with paid flag
+  res.redirect(`/?paid=true&projectId=${project.id}`);
+});
+
+// ─── DOWNLOAD: SERVE ZIP (payment-gated) ───────────────────
+router.get("/:id/download", (req: Request, res: Response) => {
+  const project = projects.get(req.params.id as string);
+  if (!project?.output) {
+    res.status(404).json({ error: "Project not found" });
+    return;
+  }
+
+  if (!project.paidAt) {
+    res.status(402).json({ error: "Payment required. Complete checkout first." });
+    return;
+  }
+
+  const zipPath = project.output.zipPath;
+  if (!zipPath) {
+    res.status(404).json({ error: "ZIP file not found" });
+    return;
+  }
+
+  res.download(zipPath, `${project.output.projectName ?? "cortex-project"}.zip`);
 });
 
 export default router;

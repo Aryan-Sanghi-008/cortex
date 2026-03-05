@@ -146,4 +146,60 @@ export class StripeGateway implements PaymentGateway {
       return { sessionId: "", checkoutUrl: "", status: "failed" };
     }
   }
+
+  /**
+   * Create a Stripe Checkout Session for project download — fixed ₹100 INR.
+   */
+  async createDownloadCheckout(
+    projectId: string,
+    successUrl: string,
+    cancelUrl: string
+  ): Promise<PaymentResult> {
+    if (!this.secretKey) {
+      logger.warn("[Payment] STRIPE_SECRET_KEY not set — skipping payment, marking as paid");
+      // Dev mode: auto-approve if no key set
+      return { sessionId: "dev-mode", checkoutUrl: "", status: "paid" };
+    }
+
+    try {
+      const body = new URLSearchParams();
+      body.append("mode", "payment");
+      body.append("success_url", `${successUrl}?session_id={CHECKOUT_SESSION_ID}`);
+      body.append("cancel_url", cancelUrl);
+      body.append("metadata[projectId]", projectId);
+      body.append("metadata[type]", "download");
+      // Fixed ₹100 INR = 10000 paise
+      body.append("line_items[0][price_data][currency]", "inr");
+      body.append("line_items[0][price_data][product_data][name]", "Cortex Project Download");
+      body.append("line_items[0][price_data][product_data][description]", `Full source code for project ${projectId}`);
+      body.append("line_items[0][price_data][unit_amount]", "10000");
+      body.append("line_items[0][quantity]", "1");
+
+      const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${Buffer.from(this.secretKey + ":").toString("base64")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: body.toString(),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Stripe error: ${res.status} ${err}`);
+      }
+
+      const session = (await res.json()) as { id: string; url: string };
+      logger.info(`[Payment] Download checkout created: ${session.id} (₹100 INR)`);
+
+      return {
+        sessionId: session.id,
+        checkoutUrl: session.url,
+        status: "pending",
+      };
+    } catch (err) {
+      logger.error("[Payment] Download checkout failed", err);
+      return { sessionId: "", checkoutUrl: "", status: "failed" };
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { PromptInput } from "./components/PromptInput";
 import { PipelineDashboard } from "./components/PipelineDashboard";
 import { BotVisualization } from "./components/BotVisualization";
@@ -19,6 +19,29 @@ const App: React.FC = () => {
   const isRunning =
     project && (project.status === "running" || project.status === "queued");
   const isComplete = project?.status === "completed" && project.output;
+
+  // ─── Tab Close Guard: warn during generation ───
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      // Modern browsers ignore custom messages but still show a dialog
+      e.returnValue = "Your project is still being generated. Are you sure you want to leave?";
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isRunning]);
+
+  // ─── Auto-open preview in new tab when project completes ───
+  const previewOpened = useRef(false);
+  useEffect(() => {
+    if (isComplete && project.previewUrl && !previewOpened.current) {
+      previewOpened.current = true;
+      window.open(project.previewUrl, "_blank");
+    }
+  }, [isComplete, project?.previewUrl]);
 
   return (
     <div className="min-h-screen flex flex-col relative noise-overlay">
