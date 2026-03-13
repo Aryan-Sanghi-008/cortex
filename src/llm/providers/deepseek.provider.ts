@@ -18,7 +18,7 @@ import { parseJsonSafely } from "../../utils/json-parser.js";
 export class DeepSeekProvider implements LLMProvider {
   readonly name = LLMProviderName.DEEPSEEK;
   private client: OpenAI;
-  private model: string;
+  readonly model: string;
   private defaultTemperature: number;
   private tracker?: TokenTracker;
   private botName: string;

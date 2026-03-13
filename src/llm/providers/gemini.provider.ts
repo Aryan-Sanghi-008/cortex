@@ -57,7 +57,7 @@ function isRetryableError(err: unknown): boolean {
 export class GeminiProvider implements LLMProvider {
   readonly name = LLMProviderName.GEMINI;
   private client: GoogleGenerativeAI;
-  private model: string;
+  readonly model: string;
   private defaultTemperature: number;
   private tracker?: TokenTracker;
   private botName: string;

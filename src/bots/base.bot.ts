@@ -70,9 +70,9 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
 
         // ─── Check LLM cache (skip on retries — they have different prompts) ───
         if (lastErrors.length === 0) {
-          const cached = await llmCache.get(system, user);
+          const cached = await llmCache.get(system, user, this.llm.model);
           if (cached) {
-            logger.bot(this.instanceId, `Cache HIT — skipping LLM call`);
+            logger.bot(this.instanceId, `Cache HIT (${this.llm.model}) — skipping LLM call`);
             const parsed = JSON.parse(cached) as TOutput;
             const validation = validateOutput(parsed, this.schema);
             if (validation.success) {
@@ -102,7 +102,7 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
         }
 
         // ─── Store in cache on success ───
-        await llmCache.set(system, user, JSON.stringify(validation.data), "cached");
+        await llmCache.set(system, user, JSON.stringify(validation.data), this.llm.model);
 
         return validation.data!;
       },

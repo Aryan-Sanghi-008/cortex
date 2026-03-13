@@ -73,64 +73,31 @@ const App: React.FC = () => {
 
       {/* ──── Main Content ──── */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-        {/* Floating Orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-gradient-to-br from-accent/10 to-neon-blue/5 blur-3xl animate-orb" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-neon-purple/8 to-accent/5 blur-3xl animate-orb-delay" />
-          <div className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-neon-cyan/4 blur-3xl animate-orb" />
-        </div>
-
         {/* Content Container */}
         <div className="relative z-10 space-y-8">
           {/* ──── Home State ──── */}
           {!project && (
             <div className="animate-fade-in">
               {/* Hero Section */}
-              <div className="text-center py-12 sm:py-16 lg:py-24">
-                <div className="inline-flex items-center gap-2 mb-8 animate-fade-in">
-                  <span className="tag">
-                    <span className="w-1.5 h-1.5 rounded-full bg-neon-green animate-pulse" />
-                    AI-Powered Development Team
-                  </span>
+              <div className="text-center py-16 sm:py-24 lg:py-32">
+                <div className="inline-flex items-center gap-2 mb-8 animate-fade-in border border-white/10 bg-white/5 rounded-full px-4 py-1.5 backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
+                  <span className="text-xs font-medium text-gray-300 tracking-wide uppercase">Cortex Engine Online</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.1] mb-6 tracking-tight">
-                  <span className="block text-white/90">
-                    Turn ideas into
+                <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black leading-[1.05] tracking-tighter mb-8">
+                  <span className="block text-white">
+                    Ship faster with
                   </span>
-                  <span className="gradient-text animate-text-glow">
-                    production code
+                  <span className="bg-gradient-to-r from-accent via-neon-cyan to-accent-light text-transparent bg-clip-text">
+                    autonomous AI.
                   </span>
                 </h1>
 
-                <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-delay">
-                  Describe your product — our AI engineering team will architect,
-                  code, review, test, and prepare deployment in minutes.
+                <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light animate-fade-in-delay">
+                  Describe your architecture — our intelligent multi-agent system will
+                  generate, review, test, and prepare your production codebase in minutes.
                 </p>
-
-                {/* Feature Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 max-w-3xl mx-auto mb-12 animate-fade-in-delay">
-                  {[
-                    { icon: "📋", label: "Product Spec" },
-                    { icon: "🏗️", label: "Architecture" },
-                    { icon: "💻", label: "Full Stack Code" },
-                    { icon: "🧪", label: "Test Suite" },
-                    { icon: "🚀", label: "Deploy Ready" },
-                  ].map((feature, i) => (
-                    <div
-                      key={feature.label}
-                      className="glass rounded-xl p-3 text-center glass-hover group"
-                      style={{ animationDelay: `${i * 100}ms` }}
-                    >
-                      <span className="text-xl mb-1.5 block group-hover:scale-110 transition-transform duration-300">
-                        {feature.icon}
-                      </span>
-                      <span className="text-[11px] font-medium text-gray-400 group-hover:text-gray-300 transition-colors">
-                        {feature.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               {/* Input Section */}

@@ -26,9 +26,9 @@ export class LLMCache {
     this.enabled = enabled;
   }
 
-  private hashKey(systemPrompt: string, userPrompt: string): string {
+  private hashKey(systemPrompt: string, userPrompt: string, modelName: string): string {
     return createHash("sha256")
-      .update(systemPrompt + "||" + userPrompt)
+      .update(systemPrompt + "||" + userPrompt + "||" + modelName)
       .digest("hex")
       .slice(0, 16);
   }
@@ -37,10 +37,10 @@ export class LLMCache {
     return path.join(CACHE_DIR, `${key}.json`);
   }
 
-  async get(systemPrompt: string, userPrompt: string): Promise<string | null> {
+  async get(systemPrompt: string, userPrompt: string, modelName: string): Promise<string | null> {
     if (!this.enabled) return null;
 
-    const key = this.hashKey(systemPrompt, userPrompt);
+    const key = this.hashKey(systemPrompt, userPrompt, modelName);
     const filePath = this.getCachePath(key);
 
     try {
@@ -68,7 +68,7 @@ export class LLMCache {
   ): Promise<void> {
     if (!this.enabled) return;
 
-    const key = this.hashKey(systemPrompt, userPrompt);
+    const key = this.hashKey(systemPrompt, userPrompt, model);
     const filePath = this.getCachePath(key);
 
     const entry: CacheEntry = {

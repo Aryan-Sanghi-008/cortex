@@ -2,9 +2,29 @@
 
 > Multi-agent AI orchestration system that simulates a full software engineering company.
 
-## What is this?
+## Overview
 
-Cortex takes a **natural language product idea** and runs it through a pipeline of specialized AI bots that produce a complete software architecture blueprint:
+Cortex takes a **natural language product idea**, allocates a team of specialized AI bots (Leads and Developers), and generates a fully architected, styled, and deployable codebase.
+
+Cortex is optimized for complex applications (like Kanban boards and CRMs) using advanced memory management and the **Gemini 3.x Flash** line.
+
+## Key Features & Optimizations
+
+- **Intelligent Context Compression**: Reduces token waste by extracting signatures and typings from generated code files rather than passing raw source code between bots.
+- **Semantic Past Project Memory**: Uses TF-IDF cosine similarity to recall past successful builds and learn from prior architectural decisions.
+- **Model Tiering Architecture**: Routes complex architectural decisions to the "Leader" model (`gemini-3-flash-preview`) and bulk generation tasks to the faster/cheaper "General" model (`gemini-3.1-flash-lite-preview`).
+- **Strict JSON-Schema Contracts**: Bot-to-bot communication is strictly typed and validated using Zod, with automatic LLM self-correction loops on failure.
+- **Vercel/Linear UI Aesthetic**: The frontend interface uses a deep dark mode, minimal glassmorphism, and subtle interactive glows.
+
+## The Pipeline
+
+1. **Strategic Planning** — (Product Owner, Doc Gen, Tech Stack, Resource Planner)
+2. **Architecture & Leadership** — (Frontend Lead, Backend Lead, Database Lead, QA Lead)
+3. **Execution & Generation** — (Frontend Devs, Backend Devs, Data Devs, QA Devs, DevOps)
+4. **Final Review** — (Principal Engineer CTO Review — acts as a hard gate requiring a 7/10 score to pass)
+
+
+## Bots Architecture/Functionalities
 
 1. **Product Owner Bot** — Converts idea → epics, user stories, acceptance criteria
 2. **Tech Stack Selector** — Chooses frontend/backend/infra/DB/auth strategy
@@ -18,7 +38,7 @@ Cortex takes a **natural language product idea** and runs it through a pipeline 
 10. **Project Bundle Bot** — Combines all outputs into a single bundle
 11. **Documentation Bot** — Generates documentation from the prompt / user input for the project
 
-## Quick Start
+## Quick Start (Web Interface)
 
 ```bash
 # 1. Install dependencies

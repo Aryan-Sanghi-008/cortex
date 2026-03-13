@@ -35,6 +35,7 @@ export interface LLMGenerationRequest {
 // ─── Provider interface — every LLM provider must implement ───
 export interface LLMProvider {
   readonly name: LLMProviderName;
+  readonly model: string;
 
   /**
    * Generate a structured JSON output.
