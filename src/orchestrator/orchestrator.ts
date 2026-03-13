@@ -105,9 +105,7 @@ export class Orchestrator {
     // ─── Load past project lessons ───────────────────────────
     const similarProjects = await this.projectStore.findSimilar(productIdea);
     if (similarProjects.length > 0) {
-      const lessons = this.projectStore.formatForPrompt(similarProjects);
-      memory.set("past-projects", lessons, "ProjectStore");
-      logger.info(`Found ${similarProjects.length} similar past projects for context`);
+      logger.info(`Found ${similarProjects.length} similar past projects`);
     }
 
     // ─── Step 1: Documentation Generator ────────────────────
@@ -368,6 +366,7 @@ export class Orchestrator {
   private createDefaultProvider() {
     const name = this.config.llm.defaultProvider;
     const cfg = this.config.llm[name];
+    logger.info(`[LLM] Default provider: ${name} | model: ${cfg.model}`);
     return createLLMProvider(name, {
       apiKey: cfg.apiKey,
       model: cfg.model,

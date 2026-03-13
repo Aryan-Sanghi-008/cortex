@@ -3,7 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
-import { formatTechStack, formatProductSpec } from "../../utils/context-compressor.js";
+import { formatTechStack, formatProductSpec, compressContext } from "../../utils/context-compressor.js";
 import {
   LeadAssignment,
   LeadAssignmentSchema,
@@ -29,7 +29,7 @@ export class BackendLeadBot extends BaseBot<LeadAssignment> {
 ${formatProductSpec(productSpec)}
 
 Project Documentation:
-${JSON.stringify(doc)}`,
+${compressContext(doc)}`,
       task: `You are the Backend Lead — the most senior backend engineer on this project. Design the complete backend architecture and assign development work to your team like a Staff engineer planning a production-critical service.
 
 Your deliverables:

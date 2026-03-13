@@ -46,7 +46,7 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
     let retries = 0;
     let lastErrors: string[] = [];
 
-    logger.bot(this.instanceId, `Starting execution...`);
+    logger.bot(this.instanceId, `Starting execution (maxTokens=${this.maxTokens})...`);
 
     const output = await withRetry(
       async () => {

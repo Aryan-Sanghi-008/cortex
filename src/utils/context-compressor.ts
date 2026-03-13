@@ -20,10 +20,6 @@ export function compressContext(data: unknown, maxChars = MAX_CONTEXT_CHARS): st
   // If already small, return as-is
   if (json.length <= maxChars) return json;
 
-  // Try compact JSON first
-  const compact = JSON.stringify(data);
-  if (compact.length <= maxChars) return compact;
-
   // Deep compress: extract key fields only
   if (typeof data === "object" && data !== null) {
     const summary = extractKeySummary(data as Record<string, unknown>);
@@ -34,7 +30,7 @@ export function compressContext(data: unknown, maxChars = MAX_CONTEXT_CHARS): st
     return summaryJson.slice(0, maxChars - 50) + "\n... [truncated]";
   }
 
-  return compact.slice(0, maxChars - 50) + "... [truncated]";
+  return json.slice(0, maxChars - 50) + "... [truncated]";
 }
 
 /**

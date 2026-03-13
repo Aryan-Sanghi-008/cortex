@@ -3,7 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
-import { formatTechStack, formatProductSpec, formatLeadAssignment, formatCodebase } from "../../utils/context-compressor.js";
+import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
   CodeOutputSchema,
@@ -24,8 +24,9 @@ export class QADevBot extends BaseBot<CodeOutput> {
     const doc = memory.get("documentation");
     const techStack = memory.get("tech-stack");
     const qaLeadOutput = memory.get("qa-lead");
-    const frontendCode = memory.get("frontend-code");
-    const backendCode = memory.get("backend-code");
+    // Use code summaries instead of full source — saves 10-50K+ input tokens
+    const frontendCodeSummary = memory.get<string>("frontend-code-summary");
+    const backendCodeSummary = memory.get<string>("backend-code-summary");
 
     return {
       role: BotRole.QA_DEV,
@@ -36,11 +37,11 @@ ${formatLeadAssignment(qaLeadOutput)}
 
 ${formatProductSpec(doc)}
 
-## Frontend Code Generated:
-${formatCodebase(frontendCode as any)}
+## Frontend Codebase Structure:
+${frontendCodeSummary ?? "No frontend code summary available"}
 
-## Backend Code Generated:
-${formatCodebase(backendCode as any)}`,
+## Backend Codebase Structure:
+${backendCodeSummary ?? "No backend code summary available"}`,
       task: `You are a Senior QA Developer. Write COMPREHENSIVE, RUNNABLE test files based on the QA Lead's architecture and the actual generated application code.
 
 Your tests must be thorough enough that if they all pass, you would confidently deploy to production.

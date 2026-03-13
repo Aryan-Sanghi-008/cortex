@@ -32,7 +32,7 @@ export function loadConfig(): AppConfig {
       },
       gemini: {
         apiKey: process.env.GEMINI_API_KEY ?? "",
-        model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
+        model: process.env.GEMINI_MODEL ?? "gemini-3.1-flash-lite-preview",
       },
       deepseek: {
         apiKey: process.env.DEEPSEEK_API_KEY ?? "",
@@ -43,7 +43,7 @@ export function loadConfig(): AppConfig {
         provider: process.env.LEADER_LLM_PROVIDER as
           | LLMProviderName
           | undefined,
-        model: process.env.LEADER_MODEL || undefined,
+        model: process.env.LEADER_MODEL || 'gemini-3-flash-preview',
       },
     },
     outputDir: process.env.OUTPUT_DIR ?? "./output",

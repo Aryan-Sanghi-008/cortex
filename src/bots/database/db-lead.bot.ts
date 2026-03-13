@@ -29,7 +29,7 @@ export class DBLeadBot extends BaseBot<CodeOutput> {
 ${formatProductSpec(productSpec)}
 
 Project Documentation:
-${JSON.stringify(doc)}`,
+${formatProductSpec(doc)}`,
       task: `You are the Database Lead — a senior DBA and data architect. Design and write the COMPLETE database layer for this project with the rigor of someone designing a schema that will hold millions of records.
 
 Generate the following files:

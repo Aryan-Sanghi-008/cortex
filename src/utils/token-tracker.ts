@@ -24,7 +24,10 @@ const MODEL_PRICING: Record<string, ModelPricing> = {
 
   // Gemini
   "gemini-2.0-flash": { inputPer1M: 0.1, outputPer1M: 0.4 },
+  "gemini-2.5-flash-preview-04-17": { inputPer1M: 0.15, outputPer1M: 0.6 },
   "gemini-2.5-pro-preview-05-06": { inputPer1M: 1.25, outputPer1M: 10.0 },
+  "gemini-3.1-flash-lite-preview": { inputPer1M: 0.075, outputPer1M: 0.3 },
+  "gemini-3-flash-preview": { inputPer1M: 0.1, outputPer1M: 0.4 },
   "gemini-1.5-pro": { inputPer1M: 1.25, outputPer1M: 5.0 },
   "gemini-2.0-pro": { inputPer1M: 1.0, outputPer1M: 4.0 },
 

@@ -61,12 +61,8 @@ router.post("/", async (req: Request, res: Response) => {
         const config = loadConfig();
         const orchestrator = new Orchestrator(config, wsEmitter);
 
-        // Inject past experience
-        const similar = await projectStore.findSimilar(record.productIdea);
-        const experience = projectStore.formatForPrompt(similar);
-
         const output = await orchestrator.run(
-          record.productIdea + experience,
+          record.productIdea,
           record.images
         );
         record.status = "completed";
@@ -80,27 +76,6 @@ router.post("/", async (req: Request, res: Response) => {
         } catch (previewErr) {
           logger.warn(`[Auto-Preview] Failed: ${previewErr}`);
         }
-
-        // Store for future learning
-        await projectStore.addProject({
-          id: output.projectId,
-          prompt: record.productIdea,
-          projectType: output.documentation?.projectType ?? "web",
-          features: (output.documentation?.features ?? []).map((f: any) => typeof f === 'string' ? f : f.name ?? String(f)),
-          techStack: {
-            frontend: [],
-            backend: [],
-            database: "unknown",
-          },
-          fileCount:
-            (output.frontendCode?.files?.length ?? 0) +
-            (output.backendCode?.files?.length ?? 0) +
-            (output.databaseCode?.files?.length ?? 0),
-          qualityScore: output.principalReview?.overallQuality ?? 0,
-          lessons: output.principalReview?.summary
-            ? [output.principalReview.summary]
-            : [],
-        });
       } catch (err) {
         record.status = "failed";
         record.error = err instanceof Error ? err.message : String(err);

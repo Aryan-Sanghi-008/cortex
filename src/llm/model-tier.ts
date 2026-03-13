@@ -25,9 +25,9 @@ const TIER_MODELS: Record<LLMProviderName, TierModels> = {
     premium: "gpt-4o-mini",
   },
   gemini: {
-    cheap: "gemini-2.0-flash",
-    standard: "gemini-2.0-flash",
-    premium: "gemini-2.5-flash",
+    cheap: "gemini-2.5-flash-lite",
+    standard: "gemini-3.1-flash-lite-preview",
+    premium: "gemini-3-flash-preview",
   },
   deepseek: {
     cheap: "deepseek-ai/deepseek-r1-distill-llama-70b",
