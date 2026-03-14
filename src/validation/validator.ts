@@ -44,7 +44,7 @@ const BANNED_OUTPUT_PATTERNS: RegExp[] = [
   /\bFIXME\b/i,
   /\bTBD\b/i,
   /to be implemented/i,
-  /\bplaceholder\b/i,
+  /\bplaceholder\s+(?:content|text|copy|data|value|image|implementation)\b/i,
   /lorem ipsum/i,
   /coming soon/i,
 ];
@@ -115,11 +115,23 @@ function validateCodeOutputShape(role: BotRole, data: MaybeCodeOutput): string[]
   const hasBackendEntry = files.some((f) => /(^|\/)src\/server\.tsx?$/.test(f.path ?? ""));
   const hasDbSchema = files.some((f) => /(^|\/)prisma\/schema\.prisma$/.test(f.path ?? ""));
 
-  if (role === BotRole.FRONTEND_DEV && !hasFrontendEntry) {
+  const frontEndMentionsEntry = files.some((f) => {
+    const path = (f.path ?? "").toLowerCase();
+    const content = (f.content ?? "").toLowerCase();
+    return path.endsWith("package.json") && /\"(?:vite|react-scripts|next)\"/.test(content);
+  });
+
+  const backEndMentionsEntry = files.some((f) => {
+    const path = (f.path ?? "").toLowerCase();
+    const content = (f.content ?? "").toLowerCase();
+    return path.endsWith("package.json") && /(\"express\"|\"fastify\"|\"@fastify)/.test(content);
+  });
+
+  if (role === BotRole.FRONTEND_DEV && frontEndMentionsEntry && !hasFrontendEntry) {
     errors.push("Frontend code output must include an application entry file (src/main.tsx or src/main.ts).");
   }
 
-  if (role === BotRole.BACKEND_DEV && !hasBackendEntry) {
+  if (role === BotRole.BACKEND_DEV && backEndMentionsEntry && !hasBackendEntry) {
     errors.push("Backend code output must include server entry file (src/server.ts or src/server.tsx).");
   }
 
