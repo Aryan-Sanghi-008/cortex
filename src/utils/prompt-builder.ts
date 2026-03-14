@@ -198,6 +198,7 @@ Execution protocol (mandatory):
 - Be internally consistent: naming, IDs, route paths, entities, and field names must not conflict.
 - Prefer production-stable choices and modern maintained patterns; avoid deprecated tools and legacy syntax.
 - Include concrete specifics over generic advice (exact files, APIs, schemas, test cases, and failure paths where applicable).
+- Ensure cross-team coordination: keep contracts (entity names, API routes, request/response shapes, auth roles) compatible with upstream context.
 - Before responding, run an internal QA pass and fix weak, vague, contradictory, or incomplete sections.
 
 You will produce a structured JSON output that strictly conforms to the following schema:

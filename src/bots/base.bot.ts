@@ -80,10 +80,17 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
             const parsed = JSON.parse(cached) as TOutput;
             const validation = validateOutput(parsed, this.schema);
             if (validation.success) {
-              await new Promise(resolve => setTimeout(resolve, 1500));
-              return validation.data!;
+              const semanticValidation = validateBotQuality(this.role, validation.data);
+              if (!semanticValidation.success) {
+                logger.warn(`${this.instanceId} cache entry failed semantic validation, calling LLM`);
+              } else {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                return validation.data!;
+              }
             }
-            logger.warn(`${this.instanceId} cache entry invalid, calling LLM`);
+            if (!validation.success) {
+              logger.warn(`${this.instanceId} cache entry failed schema validation, calling LLM`);
+            }
           }
         }
 
