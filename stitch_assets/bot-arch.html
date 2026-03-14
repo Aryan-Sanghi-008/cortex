@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cortex AI - Bot Architecture</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#259df4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101a22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(16, 26, 34, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 157, 244, 0.1);
+        }
+        .code-window {
+            background: #0d141b;
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4 glass-panel sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">Cortex AI</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Dashboard</a>
+<a class="text-primary text-sm font-semibold" href="#">Bots</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Logs</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<button class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-xl">account_circle</span>
+</button>
+<div class="size-10 rounded-full bg-primary/30 flex items-center justify-center border-2 border-primary/50 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd8N03L19ZLiEXwmEz3fuwwXFXmFHeLb7PGEAwKQATBJNcacuxUA_fryNduElXOWD5dnRhasr-N7QZ3Rl_4z8NBjhLtOeeqj-T-ZSkzlFyg0teVH6GEE77sGiHAkTbsNLgfENXgp4owzz1s8s9KaIZDecZOffDs3KokmlXeX5DPvvMdMjOojI5aYLv14Kb941006kIg-7aYIuMX_hTdNS-0-rA3gMnmw4sCjb5LLMcv-JIpb1qz-Qs6jPHnaAuiTr9Pi6U5Lu6Mg"/>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 py-8 gap-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<nav class="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Bots</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Product Owner Bot</a>
+<span class="material-symbols-outlined text-xs text-primary">chevron_right</span>
+<span class="text-slate-900 dark:text-white">Architecture</span>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+<span class="material-symbols-outlined text-sm">settings</span>
+                        Configure
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2 rounded-lg bg-primary text-white font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                        Run Again
+                    </button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Product Owner Bot</h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg">Detailed execution trace and Zod-schema validated outputs</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-panel rounded-xl p-6 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-5xl text-emerald-500">check_circle</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Status</p>
+<div class="flex items-end gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">Success</p>
+<span class="text-emerald-500 text-sm font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> 100%
+                        </span>
+</div>
+<div class="h-1 w-full bg-emerald-500/20 rounded-full mt-2">
+<div class="h-1 bg-emerald-500 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-6 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-5xl text-primary">analytics</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Memory Usage</p>
+<div class="flex items-end gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">4.2 MB</p>
+<span class="text-emerald-500 text-sm font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">trending_down</span> 1.2%
+                        </span>
+</div>
+<div class="h-1 w-full bg-primary/20 rounded-full mt-2">
+<div class="h-1 bg-primary rounded-full" style="width: 42%"></div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-6 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-5xl text-amber-500">bolt</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Engine Model</p>
+<div class="flex items-end gap-2">
+<p class="text-slate-900 dark:text-white text-2xl font-bold">Gemini 3.x Flash</p>
+<span class="text-amber-500 text-sm font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">speed</span> fast
+                        </span>
+</div>
+<div class="h-1 w-full bg-amber-500/20 rounded-full mt-2">
+<div class="h-1 bg-amber-500 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div class="lg:col-span-4 flex flex-col gap-4">
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-white/5 flex items-center justify-between">
+<span class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">schema</span>
+                                Zod Schema
+                            </span>
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold uppercase">v2.1.0</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
+<span class="material-symbols-outlined text-primary">data_object</span>
+<div class="flex flex-col">
+<p class="text-xs font-bold text-slate-900 dark:text-white">user_stories</p>
+<p class="text-[10px] text-slate-500">Array&lt;ZodObject&gt;</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent">
+<span class="material-symbols-outlined text-slate-400">tag</span>
+<div class="flex flex-col">
+<p class="text-xs font-bold text-slate-900 dark:text-white">sprint_id</p>
+<p class="text-[10px] text-slate-500">ZodString (UUID)</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent">
+<span class="material-symbols-outlined text-slate-400">calendar_today</span>
+<div class="flex flex-col">
+<p class="text-xs font-bold text-slate-900 dark:text-white">timestamp</p>
+<p class="text-[10px] text-slate-500">ZodDate</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent">
+<span class="material-symbols-outlined text-slate-400">priority_high</span>
+<div class="flex flex-col">
+<p class="text-xs font-bold text-slate-900 dark:text-white">priority_level</p>
+<p class="text-[10px] text-slate-500">ZodEnum ["P0", "P1", "P2"]</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-4 flex flex-col gap-4">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-amber-500 text-lg">history</span>
+                            Execution Trace
+                        </h4>
+<div class="relative flex flex-col gap-6 pl-4 border-l-2 border-slate-200 dark:border-slate-800 ml-2">
+<div class="relative">
+<div class="absolute -left-[25px] top-1 size-4 rounded-full bg-emerald-500 ring-4 ring-background-dark"></div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">Input Validation</p>
+<p class="text-[10px] text-slate-500">Completed in 14ms</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[25px] top-1 size-4 rounded-full bg-emerald-500 ring-4 ring-background-dark"></div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">LLM Context Assembly</p>
+<p class="text-[10px] text-slate-500">Completed in 45ms</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[25px] top-1 size-4 rounded-full bg-primary ring-4 ring-background-dark"></div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">Gemini 3.x Flash Generation</p>
+<p class="text-[10px] text-slate-500">Completed in 1.4s</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[25px] top-1 size-4 rounded-full bg-slate-400 ring-4 ring-background-dark"></div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">JSON Post-processing</p>
+<p class="text-[10px] text-slate-500">Success</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-8 flex flex-col gap-4">
+<div class="code-window rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+<div class="px-4 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+<div class="flex gap-1.5">
+<div class="size-3 rounded-full bg-red-500/80"></div>
+<div class="size-3 rounded-full bg-amber-500/80"></div>
+<div class="size-3 rounded-full bg-emerald-500/80"></div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">validated_output.json</span>
+<button class="text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+</div>
+<div class="p-6 text-sm font-mono leading-relaxed overflow-x-auto">
+<pre class="text-slate-300"><span class="text-pink-400">{</span>
+  <span class="text-blue-400">"bot_id"</span>: <span class="text-emerald-400">"product-owner-v3"</span>,
+  <span class="text-blue-400">"status"</span>: <span class="text-emerald-400">"success"</span>,
+  <span class="text-blue-400">"output"</span>: <span class="text-pink-400">{</span>
+    <span class="text-blue-400">"sprint_goal"</span>: <span class="text-emerald-400">"Implement core AI orchestration layer"</span>,
+    <span class="text-blue-400">"user_stories"</span>: <span class="text-pink-400">[</span>
+      <span class="text-pink-400">{</span>
+        <span class="text-blue-400">"id"</span>: <span class="text-emerald-400">"US-001"</span>,
+        <span class="text-blue-400">"title"</span>: <span class="text-emerald-400">"As a dev, I want to trace bot execution"</span>,
+        <span class="text-blue-400">"priority"</span>: <span class="text-emerald-400">"P0"</span>,
+        <span class="text-blue-400">"acceptance_criteria"</span>: <span class="text-pink-400">[</span>
+          <span class="text-emerald-400">"Show latency per step"</span>,
+          <span class="text-emerald-400">"Display validated JSON schema"</span>
+        <span class="text-pink-400">]</span>
+      <span class="text-pink-400">}</span>,
+      <span class="text-pink-400">{</span>
+        <span class="text-blue-400">"id"</span>: <span class="text-emerald-400">"US-002"</span>,
+        <span class="text-blue-400">"title"</span>: <span class="text-emerald-400">"Visualise schema validation errors"</span>,
+        <span class="text-blue-400">"priority"</span>: <span class="text-emerald-400">"P1"</span>
+      <span class="text-pink-400">}</span>
+    <span class="text-pink-400">]</span>,
+    <span class="text-blue-400">"schema_validated"</span>: <span class="text-amber-400">true</span>,
+    <span class="text-blue-400">"confidence_score"</span>: <span class="text-amber-400">0.982</span>
+  <span class="text-pink-400">}</span>
+<span class="text-pink-400">}</span></pre>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-1 glass-panel rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">Zod Compliance</p>
+<p class="text-[10px] text-slate-500">Strict mode passed</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-emerald-500">check_circle</span>
+</div>
+<div class="flex-1 glass-panel rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">storage</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">Context Token</p>
+<p class="text-[10px] text-slate-500">1,240 tokens used</p>
+</div>
+</div>
+<span class="text-[10px] font-bold text-slate-400">82% avail.</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto border-t border-slate-200 dark:border-slate-800 py-6 px-6 glass-panel">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-slate-500">© 2024 Cortex AI Orchestrator. All rights reserved.</p>
+<div class="flex items-center gap-6">
+<a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">API Reference</a>
+<a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

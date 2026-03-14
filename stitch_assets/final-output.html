@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#259df4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101a22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Cortex - Project Bundle Ready</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header/TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-3 bg-background-light dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">neurology</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Cortex</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-4 md:px-10 lg:px-40 py-8">
+<div class="max-w-[1000px] mx-auto flex flex-col gap-8">
+<!-- Hero Section / Status -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                Execution Successful
+                            </div>
+<h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Project Bundle Ready</h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg max-w-xl">The Cortex engine has finalized your architectural blueprint and technical documentation. All assets are verified and bundled.</p>
+</div>
+<button class="flex items-center justify-center gap-2 px-6 h-12 bg-primary text-white rounded-xl font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">download</span>
+                            Download Project Bundle
+                        </button>
+</div>
+<!-- CTO Review Scorecard -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 flex flex-col gap-4 rounded-xl p-8 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-widest">Validation Status</p>
+<h3 class="text-slate-900 dark:text-white text-xl font-bold mt-1">Principal Engineer CTO Review</h3>
+</div>
+<div class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold border border-emerald-500/20">
+                                    PASSED
+                                </div>
+</div>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-5xl font-black text-slate-900 dark:text-white">8.5</span>
+<span class="text-2xl text-slate-400 font-medium">/ 10</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-2">
+<div class="bg-primary h-full w-[85%] rounded-full"></div>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-2">
+                                "The generated architecture demonstrates strong modularity and adheres to modern cloud-native patterns. High marks for security implementation and type-safety across the stack."
+                            </p>
+</div>
+<!-- Mini Stats -->
+<div class="flex flex-col gap-4">
+<div class="flex-1 rounded-xl p-6 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary mb-2">description</span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">Files Generated</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">14</p>
+</div>
+<div class="flex-1 rounded-xl p-6 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary mb-2">speed</span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">Processing Time</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">12.4s</p>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Generated Files List -->
+<div class="lg:col-span-5 flex flex-col gap-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400">folder_open</span>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Bundle Manifest</h2>
+</div>
+<div class="flex flex-col bg-slate-100 dark:bg-slate-800/30 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-400">terminal</span>
+<span class="text-sm font-medium">tech-stack.json</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-400">person_search</span>
+<span class="text-sm font-medium">product-owner.json</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-emerald-400">schema</span>
+<span class="text-sm font-medium">database-schema.sql</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-purple-400">api</span>
+<span class="text-sm font-medium">api-endpoints.yml</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">article</span>
+<span class="text-sm font-medium">README.md</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">data_object</span>
+<span class="text-sm font-medium">environment-config.env</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">visibility</span>
+</div>
+</div>
+</div>
+<!-- Documentation Preview -->
+<div class="lg:col-span-7 flex flex-col gap-4">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400">menu_book</span>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Documentation Preview</h2>
+</div>
+<div class="text-xs text-slate-500 font-medium">Generated by Documentation Bot v2.4</div>
+</div>
+<div class="bg-white dark:bg-[#0d151c] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col min-h-[400px]">
+<!-- Browser-like top bar -->
+<div class="bg-slate-100 dark:bg-slate-900/80 px-4 py-2 flex items-center gap-4 border-b border-slate-200 dark:border-slate-800">
+<div class="flex gap-1.5">
+<div class="size-2.5 rounded-full bg-red-400/50"></div>
+<div class="size-2.5 rounded-full bg-amber-400/50"></div>
+<div class="size-2.5 rounded-full bg-emerald-400/50"></div>
+</div>
+<div class="flex-1 bg-slate-200 dark:bg-slate-800 rounded-md py-1 px-3 text-[10px] text-slate-500 text-center truncate">
+                                        docs/project-spec-v2.md
+                                    </div>
+</div>
+<!-- Doc Content -->
+<div class="p-8 prose prose-slate dark:prose-invert max-w-none overflow-y-auto max-h-[500px]">
+<h1 class="text-2xl font-bold mb-4">Project Overview</h1>
+<p class="text-slate-600 dark:text-slate-400 mb-6">This document details the architectural decisions and system design for the enterprise-grade AI dashboard. The system is designed for high availability, sub-100ms latency, and robust data integrity.</p>
+<h3 class="text-lg font-bold mb-2">Technical Architecture</h3>
+<ul class="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+<li>Frontend: React 18 with Tailwind CSS and TypeScript</li>
+<li>Backend: Go-based microservices architecture</li>
+<li>Database: PostgreSQL with TimescaleDB for metrics</li>
+<li>Caching: Redis cluster for session management</li>
+</ul>
+<div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg font-mono text-xs text-primary mb-6">
+                                        {
+                                            "system_name": "Cortex_v2",
+                                            "version": "2.0.4-stable",
+                                            "security_level": "Level-4-Encrypted"
+                                        }
+                                    </div>
+<h3 class="text-lg font-bold mb-2">Core Features</h3>
+<p class="text-slate-600 dark:text-slate-400">Implementations include real-time log streaming via WebSockets, automated CTO code review gates, and comprehensive project bundling for CI/CD pipelines.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm pb-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+<span>Powered by Cortex AI Engine</span>
+</div>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">System Health</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</footer>
+</div>
+</main>
+</div>
+</div>
+</body></html>

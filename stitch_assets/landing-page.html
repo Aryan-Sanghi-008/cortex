@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cortex | Orchestrated AI Engineering</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#259df4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101a22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(27, 34, 39, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 157, 244, 0.1);
+        }
+        .glow-subtle {
+            box-shadow: 0 0 40px -10px rgba(37, 157, 244, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary/30">
+<div class="relative min-h-screen flex flex-col overflow-x-hidden">
+<!-- Background Accents -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-primary/10 to-transparent pointer-events-none opacity-50"></div>
+<div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none"></div>
+<!-- Navigation -->
+<header class="sticky top-0 z-50 px-6 py-4 lg:px-20 glass-panel border-b border-white/5">
+<nav class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">neurology</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">Cortex</span>
+</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Platform</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pipeline</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex px-6 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg transition-all glow-subtle">
+                        Start a Project
+                    </button>
+<div class="size-10 rounded-full border-2 border-primary/20 bg-cover bg-center" data-alt="User profile avatar placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBK6BqKA6AhG7QGDLd0TQw6dkEllGOESDZUgCJcrtnOgH_96GTa9MDuv27HaIjzbYA8ZqPcr1w_m1yqh86FUypup_wtzDihX9_qXeArOhkIcLtIs9Cua77zs1zru8rdDghnJ1I9Oy5ZlwkLECEddnOcZFe-Ns0OzXMuGvT5nNFcPmCsL7w59Ik2OF39Zm_3eFPQSlykb0El5o5mxv6IhueXvTQKW-TuUQBkdtuWFS56U1Z12hJcvNQ8TAEAXQ6JdQUmZ3W-gSJpMQ')"></div>
+</div>
+</nav>
+</header>
+<main class="flex-1 max-w-7xl mx-auto w-full px-6 lg:px-20">
+<!-- Hero Section -->
+<section class="py-20 lg:py-32 grid lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                        Next-Gen Autonomous Systems
+                    </div>
+<h1 class="text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white">
+                        Your AI Engineering Team, <span class="text-primary">Orchestrated.</span>
+</h1>
+<p class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
+                        Deploy a multi-agent system that autonomously handles planning, architecture, and execution with unparalleled precision.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="px-8 py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all text-lg glow-subtle">
+                            Start a Project
+                        </button>
+<button class="px-8 py-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl transition-all text-lg">
+                            Watch Demo
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="aspect-video rounded-2xl overflow-hidden glass-panel border border-primary/20 glow-subtle shadow-2xl">
+<div class="w-full h-full bg-gradient-to-br from-primary/20 via-background-dark to-primary/5 p-1">
+<div class="w-full h-full rounded-xl bg-slate-900 overflow-hidden relative">
+<div class="absolute inset-0 bg-[url('https://placeholder.pics/svg/800')] bg-cover opacity-40 mix-blend-overlay" data-alt="Abstract visualization of neural network data flow"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="p-4 rounded-full bg-primary/20 border border-primary/40 backdrop-blur-sm">
+<span class="material-symbols-outlined text-4xl text-primary leading-none">play_arrow</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pipeline Section -->
+<section class="py-20 border-t border-slate-200 dark:border-slate-800">
+<div class="text-center mb-16">
+<h2 class="text-3xl lg:text-4xl font-bold mb-4">The Pipeline</h2>
+<p class="text-slate-600 dark:text-slate-400">Streamlining complex engineering through structured agent coordination.</p>
+</div>
+<div class="grid md:grid-cols-4 gap-8 relative">
+<!-- Progress Line (Desktop) -->
+<div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+<!-- Step 1 -->
+<div class="relative flex flex-col items-center text-center gap-6">
+<div class="z-10 size-24 rounded-2xl glass-panel flex items-center justify-center text-primary glow-subtle">
+<span class="material-symbols-outlined text-4xl">content_copy</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Planning</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Strategic objective definition and roadmap generation.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative flex flex-col items-center text-center gap-6">
+<div class="z-10 size-24 rounded-2xl glass-panel flex items-center justify-center text-primary glow-subtle">
+<span class="material-symbols-outlined text-4xl">layers</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Architecture</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">High-level system design and dependency mapping.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative flex flex-col items-center text-center gap-6">
+<div class="z-10 size-24 rounded-2xl glass-panel flex items-center justify-center text-primary glow-subtle">
+<span class="material-symbols-outlined text-4xl">memory</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Execution</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Autonomous code generation and implementation.</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="relative flex flex-col items-center text-center gap-6">
+<div class="z-10 size-24 rounded-2xl glass-panel flex items-center justify-center text-primary glow-subtle">
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Review</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Automated validation, testing, and QA cycles.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid -->
+<section class="py-24 border-t border-slate-200 dark:border-slate-800">
+<div class="flex flex-col lg:flex-row justify-between items-end gap-8 mb-16">
+<div class="max-w-2xl">
+<h2 class="text-4xl lg:text-5xl font-black tracking-tight mb-6">Key Features</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400">
+                            Experience the next generation of AI engineering with our core technological pillars designed for reliability and scale.
+                        </p>
+</div>
+<button class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                        View all capabilities <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Feature Card 1 -->
+<div class="group p-8 rounded-2xl glass-panel border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300">
+<div class="mb-6 p-3 bg-primary/10 rounded-xl inline-block text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">compress</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Context Compression</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Optimize large-scale prompts for maximum efficiency without losing critical intent or semantic depth.
+                        </p>
+</div>
+<!-- Feature Card 2 -->
+<div class="group p-8 rounded-2xl glass-panel border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300">
+<div class="mb-6 p-3 bg-primary/10 rounded-xl inline-block text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">database</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Memory Management</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Persistent state management across agent sessions ensures continuity and deep situational awareness.
+                        </p>
+</div>
+<!-- Feature Card 3 -->
+<div class="group p-8 rounded-2xl glass-panel border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all duration-300">
+<div class="mb-6 p-3 bg-primary/10 rounded-xl inline-block text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">shield</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Zod Validation</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Strict schema adherence for reliable structured outputs, ensuring every response is type-safe and valid.
+                        </p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="mb-32">
+<div class="relative p-12 lg:p-20 rounded-[2rem] overflow-hidden bg-slate-900 border border-primary/20">
+<div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none"></div>
+<div class="relative z-10 max-w-2xl">
+<h2 class="text-4xl lg:text-5xl font-black text-white mb-6">Ready to scale your engineering output?</h2>
+<p class="text-slate-400 text-lg mb-10">
+                            Join hundreds of high-growth teams using Cortex to automate their architecture and development lifecycle.
+                        </p>
+<div class="flex flex-wrap gap-4">
+<button class="px-8 py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all glow-subtle">
+                                Start a Project
+                            </button>
+<button class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl backdrop-blur-md transition-all">
+                                Talk to an Expert
+                            </button>
+</div>
+</div>
+<div class="absolute -bottom-20 -right-20 size-80 bg-primary/20 blur-[100px] rounded-full"></div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-background-dark border-t border-slate-800 py-12 px-6 lg:px-20">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">neurology</span>
+<span class="text-xl font-bold tracking-tight text-white uppercase">Cortex</span>
+</div>
+<div class="flex gap-8 text-sm text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Github</a>
+<a class="hover:text-primary transition-colors" href="#">Twitter</a>
+</div>
+<p class="text-sm text-slate-500">© 2024 Cortex AI Systems Inc.</p>
+</div>
+</footer>
+</div>
+</body></html>
