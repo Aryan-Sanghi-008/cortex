@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { api } from "../utils/api";
 
 interface Props {
   projectId: string;
-  projectDir: string;
 }
 
 export const PreviewPanel: React.FC<Props> = ({ projectId }) => {
@@ -34,53 +34,54 @@ export const PreviewPanel: React.FC<Props> = ({ projectId }) => {
   };
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
-        <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-          <span className="text-lg">👁️</span> Live Preview
-        </h3>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-2">
+        <h2 className="text-slate-900 dark:text-white text-xl font-bold flex items-center gap-2">
+          <span className="material-symbols-outlined text-slate-400">preview</span>
+          Live Preview Engine
+        </h2>
         <div className="flex gap-2 items-center">
           {!previewUrl ? (
             <button
               onClick={startPreview}
               disabled={loading}
-              className="btn-primary text-sm py-2 px-4 flex items-center gap-2"
+              className="flex items-center justify-center gap-2 px-4 h-10 bg-primary-stitch text-white rounded-lg font-bold hover:brightness-110 transition-all shadow-lg shadow-primary-stitch/20 cursor-pointer disabled:opacity-50 text-sm"
             >
               {loading ? (
-                <><span className="animate-spin">⏳</span> Starting...</>
+                <><span className="material-symbols-outlined animate-spin text-sm">progress_activity</span> Starting...</>
               ) : (
-                <><span>▶️</span> Start Preview</>
+                <><span className="material-symbols-outlined text-sm">play_arrow</span> Start Preview</>
               )}
             </button>
           ) : (
             <>
-              <div className="flex glass rounded-lg overflow-hidden">
+              <div className="flex bg-slate-200 dark:bg-slate-800 rounded-lg overflow-hidden p-1 gap-1 border border-slate-300 dark:border-slate-700">
                 <button
                   onClick={() => setViewMode("desktop")}
-                  className={`px-3 py-1.5 text-[11px] font-medium transition-all ${
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 ${
                     viewMode === "desktop"
-                      ? "bg-accent text-white shadow-lg shadow-accent/20"
-                      : "text-gray-400 hover:text-gray-300"
+                      ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   }`}
                 >
-                  🖥 Desktop
+                  <span className="material-symbols-outlined text-[14px]">desktop_windows</span> Desktop
                 </button>
                 <button
                   onClick={() => setViewMode("mobile")}
-                  className={`px-3 py-1.5 text-[11px] font-medium transition-all ${
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 ${
                     viewMode === "mobile"
-                      ? "bg-accent text-white shadow-lg shadow-accent/20"
-                      : "text-gray-400 hover:text-gray-300"
+                      ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   }`}
                 >
-                  📱 Mobile
+                  <span className="material-symbols-outlined text-[14px]">smartphone</span> Mobile
                 </button>
               </div>
               <button
                 onClick={stopPreviewServer}
-                className="px-3 py-1.5 bg-neon-red/10 border border-neon-red/20 text-neon-red rounded-lg text-[11px] font-medium hover:bg-neon-red/20 transition-all"
+                className="flex items-center justify-center gap-1.5 px-3 h-9 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-500 rounded-lg font-bold hover:bg-red-200 dark:hover:bg-red-500/20 transition-all cursor-pointer text-xs border border-red-200 dark:border-red-500/20"
               >
-                ⏹ Stop
+                <span className="material-symbols-outlined text-[14px]">stop</span> Stop
               </button>
             </>
           )}
@@ -88,37 +89,38 @@ export const PreviewPanel: React.FC<Props> = ({ projectId }) => {
       </div>
 
       {error && (
-        <div className="p-3 bg-neon-red/5 border border-neon-red/15 rounded-xl text-neon-red text-sm mb-4 flex items-center gap-2">
-          <span>⚠️</span> {error}
+        <div className="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+          <span className="material-symbols-outlined">error</span> {error}
         </div>
       )}
 
       {previewUrl && (
-        <div className="glass rounded-xl overflow-hidden neon-border-purple">
+        <div className="bg-white dark:bg-[#0d151c] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col">
           {/* Browser Chrome */}
-          <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-bg-tertiary/40">
+          <div className="bg-slate-100 dark:bg-slate-900/80 px-4 py-2.5 flex items-center gap-4 border-b border-slate-200 dark:border-slate-800">
             <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-neon-red/80 hover:bg-neon-red transition-colors cursor-pointer" />
-              <div className="w-3 h-3 rounded-full bg-neon-orange/80 hover:bg-neon-orange transition-colors cursor-pointer" />
-              <div className="w-3 h-3 rounded-full bg-neon-green/80 hover:bg-neon-green transition-colors cursor-pointer" />
+              <div className="size-2.5 rounded-full bg-red-400/50"></div>
+              <div className="size-2.5 rounded-full bg-amber-400/50"></div>
+              <div className="size-2.5 rounded-full bg-emerald-400/50"></div>
             </div>
-            <div className="flex-1 bg-white/4 rounded-lg px-3 py-1 text-[11px] font-mono text-gray-400 truncate border border-white/5">
-              {previewUrl}
+            <div className="flex-1 bg-slate-200 dark:bg-slate-800 rounded-md py-1.5 px-3 text-[11px] font-mono text-slate-500 border border-slate-300 dark:border-slate-700 flex items-center justify-between">
+              <span className="truncate">{previewUrl}</span>
+              <button
+                onClick={() => window.open(previewUrl, "_blank")}
+                className="text-primary-stitch hover:brightness-110 flex items-center"
+                title="Open in new tab"
+              >
+                <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+              </button>
             </div>
-            <button
-              onClick={() => window.open(previewUrl, "_blank")}
-              className="text-[11px] text-gray-400 hover:text-accent-light transition-colors font-medium"
-            >
-              ↗ Open
-            </button>
           </div>
           {/* Preview Frame */}
-          <div className="flex justify-center bg-[#0a0a12] p-4">
+          <div className="flex justify-center bg-slate-50 dark:bg-[#0a0f14] p-6 min-h-[400px]">
             <iframe
               src={previewUrl}
               title="Preview"
-              className={`bg-white rounded-lg shadow-2xl shadow-black/50 transition-all duration-500 ${
-                viewMode === "desktop" ? "w-full h-[600px]" : "w-[375px] h-[667px] rounded-2xl"
+              className={`bg-white rounded-lg shadow-2xl transition-all duration-500 border border-slate-200 dark:border-slate-800 ${
+                viewMode === "desktop" ? "w-full h-[600px]" : "w-[375px] h-[667px] rounded-[2.5rem] border-[8px] border-slate-800 dark:border-slate-900 shadow-xl"
               }`}
               sandbox="allow-scripts allow-same-origin allow-forms"
             />
@@ -127,10 +129,10 @@ export const PreviewPanel: React.FC<Props> = ({ projectId }) => {
       )}
 
       {!previewUrl && !loading && (
-        <div className="flex flex-col items-center justify-center p-14 bg-white/2 border border-dashed border-white/8 rounded-xl text-center">
-          <span className="text-3xl mb-3">🖥️</span>
-          <p className="text-gray-500 text-sm mb-1">No preview running</p>
-          <p className="text-gray-600 text-[11px]">Click "Start Preview" to see your generated app live</p>
+        <div className="flex flex-col items-center justify-center p-14 bg-slate-50 dark:bg-slate-800/20 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center">
+          <span className="material-symbols-outlined text-4xl text-slate-400 mb-3 block">play_circle</span>
+          <p className="text-slate-900 dark:text-white font-bold mb-1">Preview Offline</p>
+          <p className="text-slate-500 text-sm">Start the preview engine to interact with your generated application</p>
         </div>
       )}
     </div>

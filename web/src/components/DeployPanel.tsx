@@ -72,110 +72,111 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
     {
       id: "vercel",
       name: "Vercel",
-      icon: "▲",
+      icon: "rocket_launch", 
       desc: "Best for frontend & serverless",
       badge: "Popular",
     },
     {
       id: "railway",
       name: "Railway",
-      icon: "🚂",
+      icon: "train",
       desc: "Full-stack with database",
       badge: "Full Stack",
     },
     {
       id: "render",
       name: "Render",
-      icon: "⚡",
+      icon: "bolt",
       desc: "Free tier available",
       badge: "Free Tier",
     },
   ];
 
   return (
-    <div>
-      <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2 mb-5">
-        <span className="text-lg">🚀</span> Deploy Your Project
-      </h3>
+    <div className="w-full">
+      <h2 className="text-slate-900 dark:text-white text-xl font-bold flex items-center gap-2 mb-4">
+        <span className="material-symbols-outlined text-slate-400">cloud_upload</span>
+        Deploy Your Project
+      </h2>
 
       {deployUrl ? (
-        <div className="p-8 glass rounded-xl neon-border-green text-center">
+        <div className="p-8 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-center shadow-lg shadow-emerald-500/5">
           <div className="text-4xl mb-4">🎉</div>
-          <h4 className="text-lg font-bold text-neon-green mb-2">
+          <h4 className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mb-2">
             Deployed Successfully!
           </h4>
           <a
             href={deployUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-light underline font-mono text-sm hover:text-white transition-colors"
+            className="text-primary-stitch underline font-mono text-sm hover:brightness-110 transition-colors block mb-6"
           >
             {deployUrl}
           </a>
           <button
             onClick={() => window.open(deployUrl, "_blank")}
-            className="mt-5 btn-primary text-sm py-2.5 px-6 mx-auto block"
+            className="flex justify-center items-center gap-2 mx-auto px-6 h-10 bg-primary-stitch text-white rounded-lg font-bold hover:brightness-110 transition-all cursor-pointer text-sm shadow-md"
           >
-            Visit Site →
+            Visit Site <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Platform Selection */}
           <div className="space-y-3">
-            <div className="text-[11px] text-gray-500 mb-2 font-medium uppercase tracking-wider">Select Platform</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-2">Select Cloud Platform</div>
             {platforms.map((p) => (
               <button
                 key={p.id}
                 onClick={() => setPlatform(p.id)}
-                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 text-left group ${
+                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 text-left group border ${
                   platform === p.id
-                    ? "border-accent/40 bg-accent/5 shadow-lg shadow-accent/10"
-                    : "border-white/6 bg-white/2 hover:bg-white/4 hover:border-white/10"
+                    ? "border-primary-stitch/40 bg-primary-stitch/10 shadow-lg shadow-primary-stitch/5"
+                    : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all ${
-                  platform === p.id ? 'bg-accent/15' : 'bg-white/5 group-hover:bg-white/8'
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
+                  platform === p.id ? 'bg-primary-stitch/20 text-primary-stitch' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 group-hover:bg-slate-300 dark:group-hover:bg-slate-600'
                 }`}>
-                  {p.icon}
+                  <span className="material-symbols-outlined">{p.icon}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-white/80">{p.name}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">{p.name}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest ${
                       platform === p.id
-                        ? 'bg-accent/20 text-accent-light'
-                        : 'bg-white/5 text-gray-500'
+                        ? 'bg-primary-stitch/20 text-primary-stitch'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                     }`}>
                       {p.badge}
                     </span>
                   </div>
-                  <div className="text-[11px] text-gray-500 mt-0.5">{p.desc}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">{p.desc}</div>
                 </div>
                 {platform === p.id && (
-                  <span className="text-accent-light text-sm shrink-0">✓</span>
+                  <span className="material-symbols-outlined text-primary-stitch shrink-0 ml-2">check_circle</span>
                 )}
               </button>
             ))}
           </div>
 
           {/* Cost Breakdown */}
-          <div className="glass rounded-xl p-5 h-fit">
-            <h4 className="text-sm font-semibold text-white/80 mb-4 flex items-center gap-2">
-              <span>💰</span> Cost Estimate
+          <div className="bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 h-fit">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-slate-400">payments</span> Cost Estimate
             </h4>
 
             {cost ? (
               <>
-                <div className="space-y-2.5 mb-4">
+                <div className="space-y-3 mb-5">
                   {cost.items.map((item, i) => (
-                    <div key={i} className="flex justify-between text-sm">
-                      <span className="text-gray-400">{item.label}</span>
+                    <div key={i} className="flex justify-between text-sm items-center">
+                      <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
                       <span
-                        className={`font-medium ${
+                        className={`font-semibold ${
                           item.amount === "Free"
-                            ? "badge-success px-2 py-0.5 rounded-full text-[11px]"
-                            : "text-gray-200 font-mono tabular-nums"
+                            ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md text-[11px] uppercase tracking-wider"
+                            : "text-slate-900 dark:text-white font-mono tabular-nums"
                         }`}
                       >
                         {item.amount}
@@ -184,54 +185,56 @@ export const DeployPanel: React.FC<Props> = ({ projectId }) => {
                   ))}
                 </div>
 
-                <div className="divider-glow mb-4" />
+                <div className="w-full h-px bg-slate-200 dark:bg-slate-700 mb-5" />
 
-                <div className="flex justify-between text-base font-bold mb-4">
-                  <span className="text-white/80">Total (one-time)</span>
-                  <span className="text-neon-green font-mono tabular-nums">
+                <div className="flex justify-between items-center text-base mb-5">
+                  <span className="font-bold text-slate-900 dark:text-white">Total (one-time)</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono tabular-nums text-lg">
                     {cost.totalFormatted}
                   </span>
                 </div>
 
-                <div className="glass rounded-lg p-3 text-[11px] text-gray-500 mb-5">
-                  <div className="font-medium text-gray-400 mb-1.5 flex items-center gap-1">
-                    <span className="text-xs">📊</span> Monthly hosting: <span className="text-gray-300">{cost.hosting.monthly}</span>
+                <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 rounded-lg p-4 text-xs text-slate-500 dark:text-slate-400 mb-6 shadow-sm">
+                  <div className="font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[14px]">bar_chart</span> Monthly hosting: <span className="text-slate-900 dark:text-white ml-1">{cost.hosting.monthly}</span>
                   </div>
-                  {cost.hosting.breakdown.map((line, i) => (
-                    <div key={i} className="text-[10px] leading-relaxed">• {line}</div>
-                  ))}
+                  <ul className="space-y-1.5 pl-6 list-disc">
+                    {cost.hosting.breakdown.map((line, i) => (
+                      <li key={i} className="leading-relaxed text-slate-500 dark:text-slate-400">{line}</li>
+                    ))}
+                  </ul>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleDeploy}
                     disabled={deploying}
-                    className="flex-1 btn-primary text-sm py-2.5 flex items-center justify-center gap-2"
+                    className="flex-1 flex justify-center items-center gap-2 px-4 h-11 bg-primary-stitch text-white rounded-lg font-bold hover:brightness-110 transition-all shadow-md cursor-pointer disabled:opacity-50 text-sm"
                   >
                     {deploying ? (
-                      <><span className="animate-spin">⏳</span> Deploying...</>
+                      <><span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Deploying...</>
                     ) : (
-                      <><span>🚀</span> Deploy Now</>
+                      <><span className="material-symbols-outlined text-[16px]">rocket_launch</span> Deploy Now</>
                     )}
                   </button>
                   <button
                     onClick={handlePay}
-                    className="btn-secondary text-sm py-2.5 px-4 flex items-center gap-2"
+                    className="flex justify-center items-center gap-2 px-4 h-11 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-all cursor-pointer text-sm"
                   >
-                    <span>💳</span> Pay & Deploy
+                    <span className="material-symbols-outlined text-[16px]">credit_card</span> Pay & Deploy
                   </button>
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-gray-500 text-sm">
-                <span className="text-xl mb-2 animate-pulse">⏳</span>
-                Loading cost estimate...
+              <div className="flex flex-col items-center justify-center py-10 text-slate-500 dark:text-slate-400 text-sm">
+                <span className="material-symbols-outlined text-3xl mb-3 animate-spin text-slate-300 dark:text-slate-600">progress_activity</span>
+                Calculating cloud resources...
               </div>
             )}
 
             {error && (
-              <div className="mt-3 p-3 bg-neon-red/5 border border-neon-red/15 rounded-lg text-neon-red text-[11px] flex items-center gap-2">
-                <span>⚠️</span> {error}
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg text-red-600 dark:text-red-400 text-xs flex items-center gap-2 font-medium">
+                <span className="material-symbols-outlined text-[16px]">warning</span> {error}
               </div>
             )}
           </div>
