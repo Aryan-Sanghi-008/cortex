@@ -8,3 +8,4 @@ output/
 package-lock.json
 .cortex-cache
 .DS_Store
+stitch_assets

@@ -24,6 +24,34 @@
   --color-neon-orange: #fb923c;
   --color-neon-red: #f87171;
   --color-neon-pink: #f472b6;
+
+  /* Additional Stitch specific colors */
+  --color-primary-stitch: #259df4;
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #101a22;
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(27, 34, 39, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(37, 157, 244, 0.1);
+  }
+  .glow-subtle {
+    box-shadow: 0 0 40px -10px rgba(37, 157, 244, 0.3);
+  }
+  .glass-card {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glow-primary {
+    box-shadow: 0 0 15px rgba(37, 157, 244, 0.2);
+  }
+  .active-glow {
+    box-shadow: 0 0 20px rgba(37, 157, 244, 0.4);
+    border-color: rgba(37, 157, 244, 0.5);
+  }
 }
 
 /* ──── Base ──── */
