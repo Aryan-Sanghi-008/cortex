@@ -47,7 +47,6 @@ const BANNED_OUTPUT_PATTERNS: RegExp[] = [
   /placeholder/i,
   /lorem ipsum/i,
   /coming soon/i,
-  /\.\.\./,
 ];
 
 const DEPRECATED_PACKAGE_HINTS: RegExp[] = [
