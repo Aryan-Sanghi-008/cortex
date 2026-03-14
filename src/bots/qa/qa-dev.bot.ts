@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -102,9 +103,10 @@ TESTING STANDARDS — follow these rigorously:
    - Check error messages: expect(response.body.error.message).toContain('required')
    - Check status codes: expect(response.status).toBe(422) — not just expect(response.ok).toBeFalsy()
 
-CRITICAL: Every test file must be COMPLETE and RUNNABLE. No skipped tests, no placeholder assertions, no TODOs. Import all dependencies correctly using the actual project paths.`,
+CRITICAL: Every test file must be COMPLETE and RUNNABLE. No skipped tests, no placeholder assertions, no TODOs. Import all dependencies correctly using the actual project paths.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Include strict TypeScript typings in ALL test files — typed mock factories, typed assertions",
         "Mock database calls and external APIs comprehensively — use vi.mock() and msw",
         "No placeholder tests — every test must have REAL assertions that validate specific behavior",

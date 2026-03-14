@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
 import {
   ResourcePlanOutput,
@@ -70,9 +71,10 @@ Allocation Rules:
 - leaderBots: ceil(totalOtherBots / 5), minimum 1
 - devopsBots: 1 (standard), 2 (complex infra)
 
-Provide detailed reasoning for each allocation decision, tied to specific features from the product spec.`,
+Provide detailed reasoning for each allocation decision, tied to specific features from the product spec.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: RESOURCE_PLAN_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "All bot counts must be >= 1",
         "leaderBots should be approximately ceil(totalOtherBots / 5), minimum 1",
         "devopsBots is typically 1 unless the infra is unusually complex (multi-region, custom networking)",

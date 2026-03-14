@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, formatLeadAssignment, formatApiContract } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -106,9 +107,10 @@ ENGINEERING STANDARDS — treat these as non-negotiable:
 8. **API Integration**
    - Use the project's centralized API client — never raw fetch calls in components
    - Handle ALL HTTP error codes: 401 (redirect to login), 403 (permission denied), 404 (not found), 422 (validation), 500 (server error)
-   - Implement optimistic updates where it improves UX (toggling likes, deleting items)`,
+   - Implement optimistic updates where it improves UX (toggling likes, deleting items)${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Every file in assignedFiles MUST appear in your output — missing files means build failure",
         "ZERO placeholder code — every function body must be fully implemented with real logic",
         "Use STRICT TypeScript with explicit type annotations on every function, const, and interface. NEVER use 'any'.",

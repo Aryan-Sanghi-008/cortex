@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -74,9 +75,10 @@ Generate the following files:
    - Handle the "multiple PrismaClient instances in development" warning
    - Add graceful shutdown: listen for SIGINT/SIGTERM and call \`prisma.$disconnect()\`
 
-The Prisma schema MUST compile without errors. Test it mentally — every @relation must have matching fields and references, every enum must be defined before use, every @@index must reference existing fields.`,
+The Prisma schema MUST compile without errors. Test it mentally — every @relation must have matching fields and references, every enum must be defined before use, every @@index must reference existing fields.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "schema.prisma MUST contain ALL data entities from the documentation — missing a model means missing an entire feature",
         "EVERY relationship must have correct Prisma syntax: @relation(fields: [...], references: [...]) on the foreign key side",
         "EVERY model must have id, createdAt, updatedAt fields",

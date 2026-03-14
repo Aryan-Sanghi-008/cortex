@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import {
   ProductOwnerOutput,
   ProductOwnerOutputSchema,
@@ -59,9 +60,10 @@ Your specification must include:
    - Identify risks that could derail the project (technical complexity, unclear requirements, third-party dependencies)
    - For each risk, suggest a mitigation strategy
 
-Be ruthlessly thorough — this specification will be the SINGLE SOURCE OF TRUTH for all downstream architecture, engineering, QA, and DevOps decisions. If something is ambiguous in the product idea, make a reasonable assumption and document it clearly.`,
+Be ruthlessly thorough — this specification will be the SINGLE SOURCE OF TRUTH for all downstream architecture, engineering, QA, and DevOps decisions. If something is ambiguous in the product idea, make a reasonable assumption and document it clearly.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: PRODUCT_OWNER_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Each user story must have a unique ID (US-001, US-002, etc.)",
         "Each user story must reference a valid epic name",
         "Priority distribution must be realistic — roughly 30% Must, 30% Should, 25% Could, 15% Won't",

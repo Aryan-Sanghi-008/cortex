@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, formatCodebase } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -81,9 +82,10 @@ CRITICAL RULES:
 - Handle ALL Prisma error codes gracefully — never let raw database errors propagate to callers
 - Use the exact Prisma models defined by the Database Lead
 - Import PrismaClient from the singleton instance (src/lib/db.ts)
-- Every repository method must be async and properly handle errors`,
+- Every repository method must be async and properly handle errors${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Include strict TypeScript typings for ALL repository methods — explicit params and return types",
         "Handle database errors gracefully: P2002 → ConflictError, P2025 → NotFoundError, connection errors → ServiceUnavailableError",
         "No placeholder code — every repository method must be fully implemented with real Prisma queries",

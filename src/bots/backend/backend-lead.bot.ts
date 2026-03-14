@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, compressContext } from "../../utils/context-compressor.js";
 import {
   LeadAssignment,
@@ -94,9 +95,10 @@ Your deliverables:
    - Security: parameterized queries, input sanitization, no string concatenation for SQL/URLs
    - Dependency versions: ALL must be stable releases (no beta/rc/alpha)
 
-Think like a senior backend architect who has built APIs serving millions of requests — be specific, be thorough, leave nothing to guesswork.`,
+Think like a senior backend architect who has built APIs serving millions of requests — be specific, be thorough, leave nothing to guesswork.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: LEAD_ASSIGNMENT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "MUST include a Server Setup module with src/server.ts as the entry point — without this file, the server does not start",
         "MUST include an Authentication module with login, signup, token refresh, and auth middleware",
         "MUST include API routes for ALL data entities identified in the documentation",

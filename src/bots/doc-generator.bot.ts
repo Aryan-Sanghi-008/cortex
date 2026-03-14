@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import {
   DocGeneratorOutput,
   DocGeneratorOutputSchema,
@@ -74,9 +75,10 @@ Analyze the prompt deeply and extract:
    - Identify scalability constraints (how many users? how much data? real-time requirements?)
    - Note integration requirements (third-party APIs, OAuth providers, payment processors)
 
-Be AGGRESSIVELY thorough. A feature you miss here will be missing from the entire project. When in doubt, include it.`,
+Be AGGRESSIVELY thorough. A feature you miss here will be missing from the entire project. When in doubt, include it.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: DOC_GENERATOR_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Extract features comprehensively — for every 1 feature the user mentions, identify 2-3 implied features",
         "Data entities must capture the COMPLETE domain model — include User, Session, and any entity implied by features",
         "Pages must include ALL auth flows (login, signup, forgot password, email verification) and utility pages (404, settings)",

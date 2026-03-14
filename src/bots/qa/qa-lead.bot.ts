@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec } from "../../utils/context-compressor.js";
 import {
   LeadAssignment,
@@ -97,9 +98,10 @@ Design the complete testing architecture:
    - External services: Always mock (payment processors, email services, file storage)
    - Authentication: Create helper to generate valid JWT tokens for test users with different roles
 
-Break this into clear modules that QA developers can implement independently. Each module should have exact file paths, specific test cases to write, and the exact mocking approach.`,
+Break this into clear modules that QA developers can implement independently. Each module should have exact file paths, specific test cases to write, and the exact mocking approach.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: LEAD_ASSIGNMENT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Test architecture MUST use Vitest as the test runner — it's fast, TypeScript-native, and Jest-compatible",
         "Frontend testing MUST use @testing-library/react — test behavior, not implementation details",
         "Backend testing MUST use supertest for HTTP-level testing against the Express app",
