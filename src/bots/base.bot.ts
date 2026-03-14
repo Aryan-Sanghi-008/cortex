@@ -26,6 +26,19 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
   /** Max output tokens for this bot's LLM calls. Override in subclasses for larger outputs. */
   protected maxTokens: number = 16384;
 
+  /**
+   * Cross-role quality bar applied to every bot prompt.
+   * These constraints enforce modern, production-safe output without relying on per-role prompt wording.
+   */
+  private static readonly universalQualityConstraints: string[] = [
+    "Maximize factual and implementation accuracy; do not invent unsupported APIs, libraries, or file paths.",
+    "Use current stable, maintained technologies and patterns only; avoid deprecated, legacy, beta, RC, or experimental approaches unless explicitly requested.",
+    "Produce complete, executable outputs with no placeholders, TODOs, stubs, or ambiguous instructions.",
+    "Coordinate strictly with upstream and downstream bot contracts (routes, schemas, entities, naming, auth roles, and error formats) to prevent integration drift.",
+    "Follow modern software design principles: clear separation of concerns, low coupling/high cohesion, consistency, and secure-by-default decisions.",
+    "Surface assumptions, edge cases, and failure paths explicitly so downstream bots and human reviewers can act without clarification.",
+  ];
+
   constructor(
     llm: LLMProvider,
     schema: z.ZodType<TOutput, any, any>,
@@ -55,6 +68,11 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
     const output = await withRetry(
       async () => {
         const parts = this.buildPromptParts(memory);
+
+        parts.constraints = [
+          ...(parts.constraints ?? []),
+          ...BaseBot.universalQualityConstraints,
+        ];
 
         // If we had validation errors from a previous attempt, add them as constraints
         if (lastErrors.length > 0) {
