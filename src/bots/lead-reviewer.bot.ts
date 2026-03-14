@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import { formatLeadAssignment, formatCodebase } from "../utils/context-compressor.js";
 import {
   PRReview,
@@ -107,9 +108,10 @@ SCORING GUIDE:
 - 3-4: Below standard — multiple issues that would cause production problems
 - 1-2: Unacceptable — major missing pieces, broken functionality, or security issues
 
-Review the code as a whole. Do NOT include every single file in the fileReviews array. ONLY include files in the fileReviews array that actually have issues or need changes. If a file is perfect, leave it out of the array to save space. Set approved = true ONLY if overallQuality >= 7.`,
+Review the code as a whole. Do NOT include every single file in the fileReviews array. ONLY include files in the fileReviews array that actually have issues or need changes. If a file is perfect, leave it out of the array to save space. Set approved = true ONLY if overallQuality >= 7.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: PR_REVIEW_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "ONLY include files in the fileReviews array if they have actual problems or suggestions. Skip perfect files.",
         "Check that ALL files from the module assignment are present in the output",
         "Flag ANY placeholder or stub code as a blocking issue — this is a hard reject",

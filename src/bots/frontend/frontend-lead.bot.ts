@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, compressContext } from "../../utils/context-compressor.js";
 import {
   LeadAssignment,
@@ -84,9 +85,10 @@ Your deliverables:
    - Error handling: ErrorBoundary on each route, try/catch on async operations, toast notifications for errors
    - Accessibility: semantic HTML, ARIA labels, focus management, keyboard navigation
 
-Think like a senior lead assigning work to mid-level developers — your assignments should be so detailed that NO clarifying questions are needed.`,
+Think like a senior lead assigning work to mid-level developers — your assignments should be so detailed that NO clarifying questions are needed.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: LEAD_ASSIGNMENT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "File paths must match the folder structure you define. ALWAYS include entry points: src/main.tsx (or app/layout.tsx for Next.js), src/App.tsx",
         "Every page from the documentation must be assigned to exactly one module — no page is left unassigned",
         "Include auth-related pages (login, signup, forgot-password) and protected route guards in a dedicated module",

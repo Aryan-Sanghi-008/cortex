@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import { formatProductSpec } from "../utils/context-compressor.js";
 import {
   TechStackOutput,
@@ -70,9 +71,10 @@ Evaluate each technology layer systematically:
 For EVERY technology choice, provide:
 - The specific version or version range (e.g., "React ^19.0.0", "PostgreSQL 16")
 - A clear justification explaining why THIS technology over alternatives
-- Any migration path considerations if the project outgrows the choice`,
+- Any migration path considerations if the project outgrows the choice${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: TECH_STACK_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Select ONLY production-proven, stable technologies — NEVER beta, RC, or alpha versions. Check that the specific version you recommend is a stable release.",
         "Frontend and backend must share TypeScript for type safety across the stack",
         "Database choice must support the data model complexity implied by user stories (relationships, transactions, full-text search)",

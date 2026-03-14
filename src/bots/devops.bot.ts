@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import { formatTechStack, formatProductSpec } from "../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -100,9 +101,10 @@ Generate these files — each must be COMPLETE and PRODUCTION-READY:
    - Exclude: node_modules, .git, .env, *.md, tests, coverage, .github
    - Include: source code, package files, tsconfig, prisma schema
 
-Each file must be COMPLETE — no placeholders, no "customize here" comments. Every value must be sensible and production-appropriate.`,
+Each file must be COMPLETE — no placeholders, no "customize here" comments. Every value must be sensible and production-appropriate.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Dockerfile MUST use multi-stage build with specific version tags (never :latest)",
         "Dockerfile MUST run as non-root user and include HEALTHCHECK instruction",
         "docker-compose MUST include the exact database from the tech stack with health checks and persistence",

@@ -3,6 +3,7 @@ import { BotRole } from "../types.js";
 import { LLMProvider } from "../../llm/types.js";
 import { ShortTermMemory } from "../../memory/short-term.memory.js";
 import { PromptParts } from "../../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "../prompt-quality.js";
 import { formatTechStack, formatProductSpec, formatLeadAssignment } from "../../utils/context-compressor.js";
 import {
   CodeOutput,
@@ -111,9 +112,10 @@ ENGINEERING STANDARDS — treat these as non-negotiable:
    - Log every request: method, path, status code, duration, request ID
    - Log errors with full context: error class, message, affected resource, user ID
    - Use structured JSON logging format
-   - NEVER log sensitive data: passwords, tokens, PII`,
+   - NEVER log sensitive data: passwords, tokens, PII${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: CODE_OUTPUT_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Every file in assignedFiles MUST appear in your output — missing files breaks the build",
         "ZERO placeholder code — every function body must be fully implemented with real logic",
         "Use STRICT TypeScript with explicit types on every function, parameter, and return value. NEVER use 'any'.",

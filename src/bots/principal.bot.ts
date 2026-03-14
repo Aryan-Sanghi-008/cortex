@@ -3,6 +3,7 @@ import { BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
 import { PromptParts } from "../utils/prompt-builder.js";
+import { EXPERT_ROLE_TASK_MANDATE, EXPERT_ROLE_CONSTRAINTS } from "./prompt-quality.js";
 import { formatTechStack, formatProductSpec, formatCodebase } from "../utils/context-compressor.js";
 import {
   PRReview,
@@ -133,9 +134,10 @@ SCORING — Be brutally honest:
 
 Score EACH area above, then provide an overall weighted score. Provide specific, actionable feedback for every issue found — include file names and describe the exact problem and fix.
 
-Set approved = true ONLY if overallQuality >= 7.`,
+Set approved = true ONLY if overallQuality >= 7.${EXPERT_ROLE_TASK_MANDATE}`,
       schemaDescription: PR_REVIEW_SCHEMA_DESCRIPTION,
       constraints: [
+        ...EXPERT_ROLE_CONSTRAINTS,
         "Review EVERY generated file across ALL teams — frontend, backend, database, tests, DevOps",
         "Be CRITICALLY honest — a 5/10 means 'has significant gaps,' not 'average.' Don't inflate scores.",
         "Identify FE ↔ BE contract mismatches: route paths, request shapes, response shapes, auth tokens",
