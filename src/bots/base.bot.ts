@@ -2,7 +2,11 @@ import { z } from "zod";
 import { Bot, BotResult, BotRole } from "./types.js";
 import { LLMProvider } from "../llm/types.js";
 import { ShortTermMemory } from "../memory/short-term.memory.js";
-import { validateOutput, formatValidationErrors } from "../validation/validator.js";
+import {
+  validateOutput,
+  formatValidationErrors,
+  validateBotQuality,
+} from "../validation/validator.js";
 import { buildPrompt, PromptParts } from "../utils/prompt-builder.js";
 import { withRetry } from "../utils/retry.js";
 import { logger } from "../utils/logger.js";
@@ -76,10 +80,17 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
             const parsed = JSON.parse(cached) as TOutput;
             const validation = validateOutput(parsed, this.schema);
             if (validation.success) {
-              await new Promise(resolve => setTimeout(resolve, 1500));
-              return validation.data!;
+              const semanticValidation = validateBotQuality(this.role, validation.data);
+              if (!semanticValidation.success) {
+                logger.warn(`${this.instanceId} cache entry failed semantic validation, calling LLM`);
+              } else {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                return validation.data!;
+              }
             }
-            logger.warn(`${this.instanceId} cache entry invalid, calling LLM`);
+            if (!validation.success) {
+              logger.warn(`${this.instanceId} cache entry failed schema validation, calling LLM`);
+            }
           }
         }
 
@@ -98,6 +109,15 @@ export abstract class BaseBot<TOutput> implements Bot<TOutput> {
           retries++;
           throw new Error(
             `Schema validation failed: ${lastErrors.join(", ")}`
+          );
+        }
+
+        const semanticValidation = validateBotQuality(this.role, validation.data);
+        if (!semanticValidation.success) {
+          lastErrors = semanticValidation.errors ?? [];
+          retries++;
+          throw new Error(
+            `Semantic quality validation failed: ${lastErrors.join(", ")}`
           );
         }
 

@@ -193,6 +193,14 @@ export function buildPrompt(parts: PromptParts): {
 
   const system = `${ROLE_PROMPTS[parts.role]}
 
+Execution protocol (mandatory):
+- Act strictly within your role's professional responsibilities; do not skip domain-critical details.
+- Be internally consistent: naming, IDs, route paths, entities, and field names must not conflict.
+- Prefer production-stable choices and modern maintained patterns; avoid deprecated tools and legacy syntax.
+- Include concrete specifics over generic advice (exact files, APIs, schemas, test cases, and failure paths where applicable).
+- Ensure cross-team coordination: keep contracts (entity names, API routes, request/response shapes, auth roles) compatible with upstream context.
+- Before responding, run an internal QA pass and fix weak, vague, contradictory, or incomplete sections.
+
 You will produce a structured JSON output that strictly conforms to the following schema:
 
 ${parts.schemaDescription}
@@ -201,7 +209,8 @@ Rules:
 - Respond ONLY with valid JSON
 - Do not include markdown formatting, code fences, or any explanatory text
 - Every field in the schema must be present
-- Arrays must contain at least one element${constraintBlock}`;
+- Arrays must contain at least one element
+- Never output placeholders (TODO, FIXME, TBD, "coming soon", "placeholder")${constraintBlock}`;
 
   const user = `Project Context:
 ${parts.context}
